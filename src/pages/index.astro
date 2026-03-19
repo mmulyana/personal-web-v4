@@ -1,13 +1,15 @@
 ---
-import { SITE, SKILLSSHOWCASE_CONFIG, SOCIAL_LINKS } from '~/config.ts'
-import { GITHUB_CONFIG, POSTS_CONFIG } from '~/config.ts'
+import { SITE, SKILLSSHOWCASE_CONFIG, SOCIAL_LINKS } from '~/config'
+import { GITHUB_CONFIG, POSTS_CONFIG } from '~/config'
+import { Image } from 'astro:assets'
 import Layout from '~/layouts/Layout.astro'
 import SectionDivider from '~/components/base/SectionDivider.astro'
-import GithubContributions from '~/components/base/GithubContributions.tsx'
+import GithubContributions from '~/components/base/GithubContributions'
 import SocialLink from '~/components/base/SocialLink.astro'
 import List from '~/components/posts/card/List.astro'
 import SkillsShowcase from '~/components/base/SkillsShowcase.astro'
 import { getNumPosts, getPinnedPosts } from '~/lib/data'
+import wallpaper from '../assets/photos/wallpaper.png'
 
 const { ENABLED, GITHUB_USERNAME, TOOLTIP_ENABLED } = GITHUB_CONFIG
 const { size, type } = POSTS_CONFIG.homePageConfig
@@ -24,29 +26,22 @@ if (hasPinnedPosts) {
 ---
 
 <Layout title="Readme" description={SITE.description}>
-  <div class="relative z-[1]">
+  <div>
     <div class="py-8 pb-10 px-6 sm:px-8">
       <h1 class="flex flex-col gap-2">
-        <span class="text-4xl sm:text-5xl tracking-tight"> Litos </span>
+        <span class="text-4xl sm:text-5xl tracking-tight">Mulyana</span>
         <span class="text-muted-foreground font-light text-xl sm:text-2xl block tracking-wide text-balance">
-          A Simple & Modern Blog Theme for Astro
+          Frontend Developer
         </span>
       </h1>
       <div class="pro text-muted-foreground text-pretty">
         <p>
-          Litos is a clean and modern Astro blog theme focused on content presentation and reading experience. More than just a blog, it's a
-          personal space to showcase your skills, projects, and life.
-        </p>
-        <p>
-          Built with Tailwind CSS for elegant responsive design and React components for smooth interactions. Features light/dark theme
-          switching, multiple article layouts, GitHub contribution charts, and more. Inspired by
-          <a href="https://github.com/needim" target="_blank" rel="nofollow noreferrer">@needim</a>, redesigned by
-          <a href="https://github.com/Dnzzk2" target="_blank" rel="nofollow noreferrer">@Dnzzk2</a> based on Astro.
+          Currently enjoying building personal software just for fun.
         </p>
       </div>
       <div class="mt-6 flex gap-6">
         {
-          SOCIAL_LINKS.map((item) => {
+          SOCIAL_LINKS.map((item: any) => {
             return <SocialLink href={item.url} icon={item.icon} aria-label={`Link of ${item.name}`} count={item.count} label="followers" />
           })
         }

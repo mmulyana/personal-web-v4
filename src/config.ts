@@ -14,18 +14,21 @@ import type {
 
 //--- Readme Page Config ---
 export const SITE: Site = {
-  title: 'Litos',
-  description:
-    'Litos is a modern blogging theme built on Astro.js, designed for developers. It supports multiple post layouts, photo displays, project displays, and more, providing an elegant user experience and powerful customization capabilities.',
+  title: 'Mulyana',
+  description: 'Fullstack developer with 1 year of experience. Currently enjoying building personal software projects just for fun.',
   website: 'https://litos.vercel.app/',
   lang: 'en',
   base: '/',
-  author: 'Dnzzk2',
+  author: 'mmulyana',
   ogImage: '/og-image.webp',
   transition: false,
 }
 
 export const HEADER_LINKS: Link[] = [
+  {
+    name: 'Home',
+    url: '/',
+  },
   {
     name: 'Posts',
     url: '/posts',
@@ -34,10 +37,10 @@ export const HEADER_LINKS: Link[] = [
     name: 'Projects',
     url: '/projects',
   },
-  {
-    name: 'Photos',
-    url: '/photos',
-  },
+  // {
+  //   name: 'Photos',
+  //   url: '/photos',
+  // },
 ]
 
 export const FOOTER_LINKS: Link[] = [
@@ -67,19 +70,14 @@ export const FOOTER_LINKS: Link[] = [
 export const SOCIAL_LINKS: SocialLink[] = [
   {
     name: 'github',
-    url: 'https://github.com/Dnzzk2',
+    url: 'https://github.com/mmulyana',
     icon: 'icon-[ri--github-fill]',
-    count: 20,
+    count: 38,
   },
   {
     name: 'twitter',
-    url: 'https://x.com/yourname',
+    url: 'https://x.com/',
     icon: 'icon-[ri--twitter-x-fill]',
-  },
-  {
-    name: 'bilibili',
-    url: 'https://space.bilibili.com/yourSpaceId',
-    icon: 'icon-[ri--bilibili-fill]',
   },
 ]
 
@@ -214,7 +212,7 @@ export const SKILLSSHOWCASE_CONFIG: SkillsShowcaseConfig = {
 
 export const GITHUB_CONFIG: GithubConfig = {
   ENABLED: true,
-  GITHUB_USERNAME: 'Dnzzk2',
+  GITHUB_USERNAME: 'mmulyana',
   TOOLTIP_ENABLED: true,
 }
 

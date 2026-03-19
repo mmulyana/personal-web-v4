@@ -111,7 +111,8 @@
 
   /* 暗色模式变量 */
   .dark {
-    --background: 240 10% 4%;
+    /* --background: 240 10% 4%; */
+    --background: 0 0% 10%;
     --foreground: 0 0% 98%;
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;

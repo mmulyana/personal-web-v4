@@ -159,12 +159,12 @@ export default function GithubContributions({ username, tooltipEnabled }: Props)
                     className={cn(
                       'size-2 relative transition-colors duration-500 rounded-[1px]',
                       count === 0
-                        ? 'bg-zinc-200/70 dark:bg-zinc-900'
+                        ? 'bg-gray-200/70 dark:bg-gray-50/5'
                         : count < 5
-                          ? 'bg-zinc-400/70 dark:bg-zinc-700'
+                          ? 'bg-green-400/70 dark:bg-green-700'
                           : count < 10
-                            ? 'bg-zinc-500'
-                            : 'bg-zinc-900 dark:bg-zinc-50'
+                            ? 'bg-green-500'
+                            : 'bg-green-900 dark:bg-green-50'
                     )}
                   />
                 </Tooltip>
