@@ -69,10 +69,19 @@ export const FOOTER_LINKS: Link[] = [
 // get icon https://icon-sets.iconify.design/
 export const SOCIAL_LINKS: SocialLink[] = [
   {
+    name: 'linkedin',
+    url: 'https://www.linkedin.com/in/mmulyana/',
+    icon: 'icon-[ri--linkedin-fill]',
+  },
+  {
     name: 'github',
     url: 'https://github.com/mmulyana',
     icon: 'icon-[ri--github-fill]',
-    count: 38,
+  },
+  {
+    name: 'threads',
+    url: 'https://www.threads.net/@mmulyana',
+    icon: 'icon-[simple-icons--threads]',
   },
   {
     name: 'twitter',

@@ -163,8 +163,8 @@ export default function GithubContributions({ username, tooltipEnabled }: Props)
                         : count < 5
                           ? 'bg-green-400/70 dark:bg-green-700'
                           : count < 10
-                            ? 'bg-green-500'
-                            : 'bg-green-900 dark:bg-green-50'
+                            ? 'bg-green-400'
+                            : 'bg-green-600 dark:bg-green-900'
                     )}
                   />
                 </Tooltip>

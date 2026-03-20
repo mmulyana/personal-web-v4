@@ -8,7 +8,7 @@ import GithubContributions from '~/components/base/GithubContributions'
 import SocialLink from '~/components/base/SocialLink.astro'
 import List from '~/components/posts/card/List.astro'
 import SkillsShowcase from '~/components/base/SkillsShowcase.astro'
-import { getNumPosts, getPinnedPosts } from '~/lib/data'
+import { getAllProjects, getNumPosts, getPinnedPosts } from '~/lib/data'
 import wallpaper from '../assets/photos/wallpaper.png'
 
 const { ENABLED, GITHUB_USERNAME, TOOLTIP_ENABLED } = GITHUB_CONFIG
@@ -23,6 +23,39 @@ if (hasPinnedPosts) {
 } else {
   showPosts = await getNumPosts(size)
 }
+
+const projects = await getAllProjects()
+const showProjects = projects.slice(0, 3)
+
+const EXPERIENCES = [
+  {
+    period: 'Nov 2024 — Now',
+    duration: '4 mos',
+    role: 'Design engineer',
+    company: 'Wait',
+    badge: 'W',
+    badgeClass: 'bg-lime-300 text-lime-950',
+    description: 'Designed a real-time waitlist and dashboard for monitoring sign ups with live updates, reducing latency by 15%.',
+  },
+  {
+    period: 'Aug 2024 — Now',
+    duration: '8 mos',
+    role: 'Design engineer',
+    company: 'Omega',
+    badge: 'O',
+    badgeClass: 'bg-cyan-300 text-cyan-950',
+    description: 'Designed and built an admin panel for enterprise clients, scaling to support over 500 active users per instance.',
+  },
+  {
+    period: 'Jan 2017 — Dec 2020',
+    duration: '4 yrs',
+    role: 'Software engineer',
+    company: 'Theta',
+    badge: 'T',
+    badgeClass: 'bg-emerald-300 text-emerald-950',
+    description: 'Developed the user interface for a crypto payment gateway, ensuring compliance with global accessibility standards.',
+  },
+]
 ---
 
 <Layout title="Readme" description={SITE.description}>
@@ -30,14 +63,10 @@ if (hasPinnedPosts) {
     <div class="py-8 pb-10 px-6 sm:px-8">
       <h1 class="flex flex-col gap-2">
         <span class="text-4xl sm:text-5xl tracking-tight">Mulyana</span>
-        <span class="text-muted-foreground font-light text-xl sm:text-2xl block tracking-wide text-balance">
-          Frontend Developer
-        </span>
+        <span class="text-muted-foreground font-light text-xl sm:text-2xl block tracking-wide text-balance"> Frontend Developer </span>
       </h1>
       <div class="pro text-muted-foreground text-pretty">
-        <p>
-          Currently enjoying building personal software just for fun.
-        </p>
+        <p>Currently enjoying building personal software just for fun.</p>
       </div>
       <div class="mt-6 flex gap-6">
         {
@@ -53,8 +82,8 @@ if (hasPinnedPosts) {
           <SectionDivider />
           <div class="py-8 pb-10 px-6 max-md:px-6">
             <div class="px-2 max-md:px-0">
-              <h2 class="text-2xl sm:text-3xl">Spotlight</h2>
-              <p class="text-muted-foreground mb-6 mt-1">GitHub contributions in the past year:</p>
+              <h2 class="text-lg sm:text-xl tracking-tight">Spotlight</h2>
+              <p class="text-muted-foreground/60 mb-6 mt-1">GitHub contributions in the past year:</p>
             </div>
             <GithubContributions username={GITHUB_USERNAME} tooltipEnabled={TOOLTIP_ENABLED} client:load transition:animate="none" />
           </div>
@@ -67,8 +96,8 @@ if (hasPinnedPosts) {
           <SectionDivider />
           <div class="py-8 pb-10 px-6 max-md:px-6">
             <div class="px-2 max-md:px-0">
-              <h2 class="text-2xl sm:text-3xl tracking-tight">Skills</h2>
-              <p class="text-muted-foreground mb-6 mt-1">It's not just skills, but also tools:</p>
+              <h2 class="text-lg sm:text-xl tracking-tight">Skills</h2>
+              <p class="text-muted-foreground/60 mb-6 mt-1">It's not just skills, but also tools:</p>
             </div>
             <SkillsShowcase skillsData={SKILLS_DATA} />
           </div>
@@ -77,8 +106,96 @@ if (hasPinnedPosts) {
     }
     <SectionDivider />
     <div class="py-8 pb-10 px-6 sm:px-8">
-      <h2 class="text-2xl sm:text-3xl tracking-tight">Posts</h2>
-      <p class="text-muted-foreground mb-6 mt-1">
+      <h2 class="text-lg sm:text-xl tracking-tight">Experience</h2>
+      <p class="text-muted-foreground/60 mt-1">
+        Throughout my career, I&apos;ve worked on various projects, from building scalable systems to designing user-friendly interfaces.
+        Here&apos;s a brief overview.
+      </p>
+
+      <div class="mt-10 space-y-10">
+        {
+          EXPERIENCES.map((item) => (
+            <div class="grid gap-3 sm:gap-4 sm:grid-cols-[10rem_1fr]">
+              <div class="text-xs sm:text-sm text-muted-foreground tracking-wide flex flex-row md:flex-col gap-x-2">
+                <p class="text-white">{item.period}</p>
+                <p>({item.duration})</p>
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-x-2 gap-y-2">
+                  <div class="text-base font-semibold">{item.role}</div>
+                  <div class="text-muted-foreground">at</div>
+                  <div class="flex items-center gap-2">
+                    <span class={`size-6 rounded-lg inline-flex items-center justify-center text-xs font-semibold ${item.badgeClass}`}>
+                      {item.badge}
+                    </span>
+                    <div class="text-base font-semibold">{item.company}</div>
+                  </div>
+                </div>
+                <p class="mt-2 text-muted-foreground text-pretty">{item.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <SectionDivider />
+    <div class="py-8 pb-10 px-6 sm:px-8">
+      <div class="flex items-center justify-between gap-4">
+        <h2 class="text-lg sm:text-xl tracking-tight">Projects</h2>
+        <a
+          href="/projects"
+          class="hidden sm:inline-flex items-center gap-1 text-xs font-medium tracking-widest text-muted-foreground uppercase hover:text-primary transition-colors"
+        >
+          View all
+          <span class="icon-[ph--arrow-right] size-4"></span>
+        </a>
+      </div>
+      <p class="text-muted-foreground/60 mt-1">Some things I&apos;ve been building lately.</p>
+
+      <div class="mt-10 grid grid-cols-1 gap-6">
+        {
+          showProjects.map((project) => (
+            <a
+              href={project.data.website}
+              target="_blank"
+              class="group block overflow-hidden rounded-2xl border border-border/50 bg-background hover:bg-muted/20 transition-colors"
+            >
+              <div class="grid gap-4 sm:grid-cols-[1fr_320px] h-full">
+                <div class="p-4 sm:p-5 h-full flex flex-col justify-between">
+                  <p class="text-xs font-medium tracking-widest text-muted-foreground uppercase">Work</p>
+                  <div>
+                    <p class="mt-2 text-xl font-semibold leading-tight">{project.data.name}</p>
+                    <p class="mt-1 text-sm text-muted-foreground line-clamp-2">{project.data.description}</p>
+                  </div>
+                </div>
+
+                <div class="sm:border-l border-border/50 h-full">
+                  {project.data.type === 'image' && project.data.icon ? (
+                    <div class="relative h-[200px] bg-muted/10">
+                      <Image
+                        src={project.data.icon}
+                        alt={project.data.name}
+                        width={1200}
+                        height={675}
+                        class="w-full h-full object-cover opacity-80 group-hover:opacity-100"
+                        densities={[1, 2]}
+                        loading="lazy"
+                      />
+                    </div>
+                  ) : (
+                    <div class="h-[200px] bg-muted/10" />
+                  )}
+                </div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+    <SectionDivider />
+    <div class="py-8 pb-10 px-6 sm:px-8">
+      <h2 class="text-lg sm:text-xl tracking-tight">Posts</h2>
+      <p class="text-muted-foreground/60 mb-6 mt-1">
         {hasPinnedPosts ? `Pinned` : 'Recent'}
         {showPosts.length} posts, worth a look.
       </p>
