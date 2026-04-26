@@ -2,14 +2,19 @@
 import { SITE, SKILLSSHOWCASE_CONFIG, SOCIAL_LINKS } from '~/config'
 import { GITHUB_CONFIG, POSTS_CONFIG } from '~/config'
 import { Image } from 'astro:assets'
+import { differenceInMonths, differenceInYears } from 'date-fns'
 import Layout from '~/layouts/Layout.astro'
 import SectionDivider from '~/components/base/SectionDivider.astro'
 import GithubContributions from '~/components/base/GithubContributions'
 import SocialLink from '~/components/base/SocialLink.astro'
 import List from '~/components/posts/card/List.astro'
 import SkillsShowcase from '~/components/base/SkillsShowcase.astro'
-import { getAllProjects, getNumPosts, getPinnedPosts } from '~/lib/data'
-import wallpaper from '../assets/photos/wallpaper.png'
+import TutorialList from '~/components/tutorials/TutorialList.astro'
+import { getAllProjects, getNumPosts, getPinnedPosts, getVisibleTutorials } from '~/lib/data'
+import mea from '../assets/photos/mea.png'
+import bitkreasi from '../assets/photos/bitkreasi.png'
+import kecilin from '../assets/photos/kecilin.png'
+import rakamin from '../assets/photos/rakamin.png'
 
 const { ENABLED, GITHUB_USERNAME, TOOLTIP_ENABLED } = GITHUB_CONFIG
 const { size, type } = POSTS_CONFIG.homePageConfig
@@ -24,36 +29,58 @@ if (hasPinnedPosts) {
   showPosts = await getNumPosts(size)
 }
 
+const tutorials = await getVisibleTutorials()
+const showTutorials = tutorials.slice(0, 2)
+
 const projects = await getAllProjects()
 const showProjects = projects.slice(0, 3)
 
+const formatDuration = (startDate: Date) => {
+  const now = new Date()
+  const years = differenceInYears(now, startDate)
+  const months = differenceInMonths(now, startDate) % 12
+
+  const parts = []
+  if (years > 0) parts.push(`${years} yr${years > 1 ? 's' : ''}`)
+  if (months > 0) parts.push(`${months} mo${months > 1 ? 's' : ''}`)
+
+  return parts.length > 0 ? parts.join(' ') : '0 mos'
+}
+
 const EXPERIENCES = [
   {
-    period: 'Nov 2024 — Now',
+    period: 'Dec 2025 - Now',
+    duration: formatDuration(new Date('2025-12-01')),
+    role: 'Frontend Developer',
+    company: 'Mea Digital Marketing',
+    logo: mea,
+    description: '',
+  },
+  {
+    period: 'May - Aug 2024',
+    duration: '3 mos',
+    role: 'Frontend Developer Intern',
+    company: 'Rakamin',
+    logo: rakamin,
+    description: 'Enhanced the hiring workflow by redesigning talent processes to reduce steps and streamline recruiter operations.',
+  },
+  {
+    period: 'Jan - Apr 2024',
     duration: '4 mos',
-    role: 'Design engineer',
-    company: 'Wait',
-    badge: 'W',
-    badgeClass: 'bg-lime-300 text-lime-950',
-    description: 'Designed a real-time waitlist and dashboard for monitoring sign ups with live updates, reducing latency by 15%.',
+    role: 'Software Engineer Intern',
+    company: 'Bitkreasi',
+    logo: bitkreasi,
+    description:
+      'Contributed to the development of the Asadesa information system, a web platform built with Next.js and Express.js to improve village-level data management.',
   },
   {
-    period: 'Aug 2024 — Now',
-    duration: '8 mos',
-    role: 'Design engineer',
-    company: 'Omega',
-    badge: 'O',
-    badgeClass: 'bg-cyan-300 text-cyan-950',
-    description: 'Designed and built an admin panel for enterprise clients, scaling to support over 500 active users per instance.',
-  },
-  {
-    period: 'Jan 2017 — Dec 2020',
-    duration: '4 yrs',
-    role: 'Software engineer',
-    company: 'Theta',
-    badge: 'T',
-    badgeClass: 'bg-emerald-300 text-emerald-950',
-    description: 'Developed the user interface for a crypto payment gateway, ensuring compliance with global accessibility standards.',
+    period: 'Jul - Oct 2023',
+    duration: '3 mos',
+    role: 'Frontend Developer Intern',
+    company: 'Kecilin',
+    logo: kecilin,
+    description:
+      'Contributed web applications across banking and transportation sectors, created a reusable Laravel template to speed up delivery, and revamped the kecilin.id landing page.',
   },
 ]
 ---
@@ -124,10 +151,8 @@ const EXPERIENCES = [
                 <div class="flex flex-wrap items-center gap-x-2 gap-y-2">
                   <div class="text-base font-semibold">{item.role}</div>
                   <div class="text-muted-foreground">at</div>
-                  <div class="flex items-center gap-2">
-                    <span class={`size-6 rounded-lg inline-flex items-center justify-center text-xs font-semibold ${item.badgeClass}`}>
-                      {item.badge}
-                    </span>
+                  <div class="flex items-center gap-2 p-2">
+                    {item?.logo && <Image src={item.logo} alt={item.company} class="size-5 object-cover" />}
                     <div class="text-base font-semibold">{item.company}</div>
                   </div>
                 </div>
@@ -200,6 +225,12 @@ const EXPERIENCES = [
         {showPosts.length} posts, worth a look.
       </p>
       <List posts={showPosts} {type} coverLayout={POSTS_CONFIG.homePageConfig?.coverLayout} />
+    </div>
+    <SectionDivider />
+    <div class="py-8 pb-10 px-6 sm:px-8">
+      <h2 class="text-lg sm:text-xl tracking-tight">Tutorials</h2>
+      <p class="text-muted-foreground/60 mb-8 mt-1">Step-by-step guides for building modern web applications.</p>
+      <TutorialList tutorials={showTutorials} />
     </div>
   </div>
 </Layout>

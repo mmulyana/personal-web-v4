@@ -28,7 +28,7 @@ const { post, class: className, style }: Props = Astro.props
         )
       }
     </div>
-    <a href={`/posts/${post.id}`} class="block">
+    <a href={`/${post.collection}/${post.id}`} class="block">
       <div class="text-base font-semibold text-foreground leading-tight group-hover:text-primary transition-colors line-clamp-2">
         {post.data.title}
       </div>

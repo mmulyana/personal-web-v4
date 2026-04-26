@@ -20,7 +20,7 @@ const recommendText = POSTS_CONFIG.recommendText
 
 <article class:list={[`group flex flex-col sm:flex-row gap-6 sm:gap-10 ${isReverse ? 'sm:flex-row-reverse' : ''}`, className]} {style}>
   <div class="sm:w-2/6 min-[var(--layout-change-width)]:w-2/8 flex flex-col overflow-hidden">
-    <a href={`/posts/${post.id}`} class="block relative">
+    <a href={`/${post.collection}/${post.id}`} class="block relative">
       <div class="aspect-[1200/630] overflow-hidden bg-muted/30 relative">
         {
           post.data.cover && (
@@ -39,7 +39,7 @@ const recommendText = POSTS_CONFIG.recommendText
       </div>
     </a>
     <a
-      href={`/posts/${post.id}`}
+      href={`/${post.collection}/${post.id}`}
       class="hidden sm:inline-flex mt-2 items-center gap-2 text-sm font-medium text-foreground/60 hover:text-primary transition-colors group/read"
     >
       {POSTS_CONFIG.readMoreText}
@@ -64,7 +64,7 @@ const recommendText = POSTS_CONFIG.recommendText
       }
     </div>
 
-    <a href={`/posts/${post.id}`} class="group/title">
+    <a href={`/${post.collection}/${post.id}`} class="group/title">
       <div class="text-base font-semibold transition-colors group-hover/title:text-primary line-clamp-2 leading-5 mb-1">
         {post.data.title}
       </div>

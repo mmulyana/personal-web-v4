@@ -1,5 +1,5 @@
 import { SITE } from '~/config'
-import { getAllPosts } from '../lib/data'
+import { getVisiblePosts } from '../lib/data'
 import type { CollectionEntry } from 'astro:content'
 import sanitizeHtml from 'sanitize-html'
 import { createMarkdownProcessor } from '@astrojs/markdown-remark'
@@ -23,7 +23,7 @@ const config: RSSConfig = {
   description: SITE.description,
   author: SITE.author,
   lang: SITE.lang,
-  posts: await getAllPosts(),
+  posts: await getVisiblePosts(),
 }
 
 // XML转义函数

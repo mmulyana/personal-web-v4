@@ -5,8 +5,8 @@ import type { CollectionEntry } from 'astro:content'
 
 interface Props {
   class?: string
-  post: CollectionEntry<'posts'>
-  posts: CollectionEntry<'posts'>[]
+  post: CollectionEntry<'posts'> | CollectionEntry<'tutorials'>
+  posts: (CollectionEntry<'posts'> | CollectionEntry<'tutorials'>)[]
 }
 
 const { class: className, post, posts } = Astro.props
@@ -15,7 +15,8 @@ const { class: className, post, posts } = Astro.props
 const postIndex = posts.findIndex((p) => p.id === post.id)
 const pageSize = POSTS_CONFIG.postPageConfig.size
 const pageNumber = Math.floor(postIndex / pageSize) + 1
-const pageUrl = pageNumber === 1 ? '/posts' : `/posts/${pageNumber}`
+const baseUrl = `/${post.collection}`
+const pageUrl = pageNumber === 1 ? baseUrl : `${baseUrl}/${pageNumber}`
 ---
 
 <a

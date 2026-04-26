@@ -5,8 +5,8 @@ import SimpleProgressRing from './SimpleProgressRing.astro'
 import { cn } from '~/lib/utils'
 
 interface Props {
-  post: CollectionEntry<'posts'>
-  posts: CollectionEntry<'posts'>[]
+  post: CollectionEntry<'posts'> | CollectionEntry<'tutorials'>
+  posts: (CollectionEntry<'posts'> | CollectionEntry<'tutorials'>)[]
   headings: MarkdownHeading[]
 }
 

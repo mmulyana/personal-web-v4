@@ -1,0 +1,76 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import MetaOnly from '~/components/posts/layouts/MetaOnly.astro'
+import CoverSplit from '~/components/posts/layouts/CoverSplit.astro'
+import CoverTop from '~/components/posts/layouts/CoverTop.astro'
+import PostNavigation from '~/components/posts/base/PostNavigation.astro'
+import PostFeatures from '~/components/posts/toc/PostFeatures.astro'
+import TocMobile from '~/components/posts/toc/TocMobile.astro'
+import { POSTS_CONFIG, SITE } from '~/config'
+import { render } from 'astro:content'
+import { getVisibleTutorials } from '~/lib/data'
+import SectionDivider from '~/components/base/SectionDivider.astro'
+import Comment from '~/components/posts/base/Comment.astro'
+import License from '~/components/posts/base/License.astro'
+
+export async function getStaticPaths() {
+  const tutorials = await getVisibleTutorials()
+  return tutorials.map((tutorial, index) => ({
+    params: { id: tutorial.id },
+    props: {
+      tutorial,
+      tutorials,
+      prev: index + 1 < tutorials.length ? tutorials[index + 1] : null,
+      next: index > 0 ? tutorials[index - 1] : null,
+    },
+  }))
+}
+
+const { tutorial, tutorials, prev, next } = Astro.props
+const { data: frontmatter } = tutorial
+const { Content, headings, remarkPluginFrontmatter } = await render(tutorial)
+
+const filterHeadings = headings.filter((heading: any) => heading.slug !== 'footnote-label')
+
+const hasValidHeadings = filterHeadings.length > 1
+type LayoutKey = 'metaOnly' | 'coverSplit' | 'coverTop'
+
+const layoutMap: Record<LayoutKey, any> = {
+  metaOnly: MetaOnly,
+  coverSplit: CoverSplit,
+  coverTop: CoverTop,
+}
+
+const layoutKey: LayoutKey = (frontmatter.postType as LayoutKey) || (POSTS_CONFIG.postType as LayoutKey)
+const PostLayout = layoutMap[layoutKey]
+---
+
+<Layout
+  title={frontmatter.title}
+  description={frontmatter.description || frontmatter.title}
+  image={frontmatter.ogImage?.src ? `${SITE.website}${frontmatter.ogImage.src}` : SITE.ogImage}
+>
+  <div class="relative flex flex-col justify-between h-fit z-[1]">
+    <TocMobile post={tutorial} posts={tutorials} headings={filterHeadings} />
+    <PostLayout {frontmatter} minutesRead={remarkPluginFrontmatter.minutesRead} wordCount={remarkPluginFrontmatter.wordCount}>
+      <Content />
+      {
+        frontmatter.license && (
+          <>
+            <hr class="pb-6" />
+            <License license={frontmatter.license} title={frontmatter.title} author={frontmatter.author} />
+          </>
+        )
+      }
+    </PostLayout>
+    {
+      tutorials.length > 1 && (
+        <div class="px-6 sm:px-8 pb-6 sm:pb-8">
+          <PostNavigation {prev} {next} />
+        </div>
+      )
+    }
+    {hasValidHeadings && <PostFeatures post={tutorial} posts={tutorials} headings={filterHeadings} />}
+    <SectionDivider />
+  </div>
+</Layout>

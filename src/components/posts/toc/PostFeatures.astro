@@ -6,8 +6,8 @@ import BackButton from './BackButton.astro'
 import BackToTop from './BackToTop.astro'
 
 interface Props {
-  post: CollectionEntry<'posts'>
-  posts: CollectionEntry<'posts'>[]
+  post: CollectionEntry<'posts'> | CollectionEntry<'tutorials'>
+  posts: (CollectionEntry<'posts'> | CollectionEntry<'tutorials'>)[]
   headings: MarkdownHeading[]
 }
 

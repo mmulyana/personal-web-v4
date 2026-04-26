@@ -37,10 +37,10 @@ export const HEADER_LINKS: Link[] = [
     name: 'Projects',
     url: '/projects',
   },
-  // {
-  //   name: 'Photos',
-  //   url: '/photos',
-  // },
+  {
+    name: 'Tutorials',
+    url: '/tutorials',
+  },
 ]
 
 export const FOOTER_LINKS: Link[] = [
@@ -220,7 +220,7 @@ export const SKILLSSHOWCASE_CONFIG: SkillsShowcaseConfig = {
  */
 
 export const GITHUB_CONFIG: GithubConfig = {
-  ENABLED: true,
+  ENABLED: false,
   GITHUB_USERNAME: 'mmulyana',
   TOOLTIP_ENABLED: true,
 }
@@ -228,12 +228,12 @@ export const GITHUB_CONFIG: GithubConfig = {
 //--- Posts Page Config ---
 export const POSTS_CONFIG: PostConfig = {
   title: 'Posts',
-  description: 'Posts by Dnzzk2',
-  introduce: 'Here, I will share the usage instructions for this theme to help you quickly use it.',
-  author: 'Dnzzk2',
+  description: 'Posts by Mulyana',
+  author: 'Mulyana',
+  introduce: '',
   homePageConfig: {
     size: 2,
-    type: 'compact',
+    type: 'minimal',
   },
   postPageConfig: {
     size: 10,
@@ -251,7 +251,7 @@ export const POSTS_CONFIG: PostConfig = {
   prevPageText: 'Previous',
   nextPageText: 'Next',
   tocText: 'On this page',
-  backToPostsText: 'Back to Posts',
+  backToPostsText: 'Back',
   nextPostText: 'Next Post',
   prevPostText: 'Previous Post',
   recommendText: 'REC',
@@ -259,7 +259,7 @@ export const POSTS_CONFIG: PostConfig = {
 }
 
 export const COMMENT_CONFIG: CommentConfig = {
-  enabled: true,
+  enabled: false,
   system: 'gitalk',
   gitalk: {
     clientID: import.meta.env.PUBLIC_GITHUB_CLIENT_ID,

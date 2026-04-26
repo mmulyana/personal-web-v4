@@ -24,6 +24,7 @@ const posts = defineCollection({
         coverLayout: z.custom<CoverLayout>().optional(),
         pinned: z.boolean().default(false),
         draft: z.boolean().default(false),
+        hidden: z.boolean().default(false),
         license: z.string().optional(),
       })
       .transform((data) => ({
@@ -49,7 +50,38 @@ const projects = defineCollection({
       star: z.number(),
       fork: z.number(),
       draft: z.boolean().default(false),
+      hidden: z.boolean().default(false),
     }),
 })
 
-export const collections = { posts, projects }
+const tutorials = defineCollection({
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/tutorials',
+  }),
+  schema: ({ image }) =>
+    z
+      .object({
+        title: z.string(),
+        description: z.string(),
+        pubDate: z.date(),
+        tags: z.array(z.string()).optional(),
+        updatedDate: z.date().optional(),
+        author: z.string().default(POSTS_CONFIG.author),
+        cover: image().optional(),
+        ogImage: image().optional(),
+        recommend: z.boolean().default(false),
+        postType: z.custom<PostType>().optional(),
+        coverLayout: z.custom<CoverLayout>().optional(),
+        pinned: z.boolean().default(false),
+        draft: z.boolean().default(false),
+        hidden: z.boolean().default(false),
+        license: z.string().optional(),
+      })
+      .transform((data) => ({
+        ...data,
+        ogImage: POSTS_CONFIG.ogImageUseCover && data.cover ? data.cover : data.ogImage,
+      })),
+})
+
+export const collections = { posts, projects, tutorials }
