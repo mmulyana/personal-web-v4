@@ -80,7 +80,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
   },
   {
     name: 'threads',
-    url: 'https://www.threads.net/@mmulyana',
+    url: 'https://www.threads.net/@mmulyana_',
     icon: 'icon-[simple-icons--threads]',
   },
   {
