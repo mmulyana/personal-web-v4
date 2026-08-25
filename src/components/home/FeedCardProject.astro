@@ -1,0 +1,131 @@
+---
+import { Image } from 'astro:assets'
+import type { FeedItem } from '~/types'
+import { formatDate } from '~/lib/utils'
+
+interface Props {
+  item: FeedItem
+}
+
+const { item }: Props = Astro.props
+const { title, description, date, icon, thumbnail, skills, url, website, githubUrls } = item
+
+const meta = date ? formatDate(date, 'feed') : null
+const isExternal = (href: string) => /^https?:\/\//.test(href)
+
+// A single repo just says "GitHub"; with more than one, label each by repo name so they're distinguishable
+const githubLabel = (href: string) => {
+  if (!githubUrls || githubUrls.length <= 1) return 'GitHub'
+  try {
+    return new URL(href).pathname.split('/').filter(Boolean).pop() ?? 'GitHub'
+  } catch {
+    return 'GitHub'
+  }
+}
+---
+
+<div class="relative px-4 py-4">
+  <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+    {
+      thumbnail && (
+        <div class="absolute inset-y-0 right-0 w-1/2">
+          <Image src={thumbnail} alt="" width={480} height={480} loading="lazy" class="size-full object-cover" />
+        </div>
+      )
+    }
+  </div>
+
+  <div class="relative flex items-start justify-between gap-3">
+    <div class="size-12 shrink-0 overflow-hidden rounded-2xl border border-border/60 bg-muted/40">
+      {
+        icon ? (
+          <Image src={icon} alt={title} width={96} height={96} densities={[1, 2]} loading="lazy" class="size-full object-cover" />
+        ) : (
+          <span class="icon-[ph--cube-bold] m-3 size-6 text-muted-foreground" />
+        )
+      }
+    </div>
+    {
+      meta && (
+        <time datetime={date!.toISOString()} class="shrink-0 pt-1 text-xs whitespace-nowrap text-muted-foreground">
+          {meta}
+        </time>
+      )
+    }
+  </div>
+
+  <div class="relative mt-3 min-w-0">
+    <h3 class="text-base font-semibold tracking-tight text-pretty">{title}</h3>
+    {description && <p class="mt-1 text-sm leading-relaxed text-muted-foreground text-pretty">{description}</p>}
+  </div>
+
+  {
+    skills && skills.length > 0 && (
+      <ul class="relative mt-2.5 flex flex-wrap gap-1.5">
+        {skills.map((skill) => (
+          <li class="rounded-full bg-muted/40 px-2 py-0.5 text-xs font-medium text-muted-foreground">{skill}</li>
+        ))}
+      </ul>
+    )
+  }
+
+  {
+    (url || website || (githubUrls && githubUrls.length > 0)) && (
+      <div class="relative mt-3 flex flex-wrap gap-2">
+        {url && (
+          <a
+            href={url}
+            class="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors duration-200 hover:border-foreground/30 hover:text-foreground"
+          >
+            <span class="icon-[ph--article-bold] size-3.5" />
+            About
+          </a>
+        )}
+        {website && (
+          <a
+            href={website}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors duration-200 hover:border-foreground/30 hover:text-foreground"
+          >
+            <span class="icon-[mdi--web] size-3.5" />
+            Website
+          </a>
+        )}
+        {githubUrls && githubUrls.length === 1 && (
+          <a
+            href={githubUrls[0]}
+            target={isExternal(githubUrls[0]) ? '_blank' : undefined}
+            rel={isExternal(githubUrls[0]) ? 'noopener noreferrer' : undefined}
+            class="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors duration-200 hover:border-foreground/30 hover:text-foreground"
+          >
+            <span class="icon-[mdi--github] size-3.5" />
+            GitHub
+          </a>
+        )}
+        {githubUrls && githubUrls.length > 1 && (
+          <details class="group/github relative">
+            <summary class="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors duration-200 select-none hover:border-foreground/30 hover:text-foreground [&::-webkit-details-marker]:hidden">
+              <span class="icon-[mdi--github] size-3.5" />
+              GitHub
+              <span class="icon-[ph--caret-down-bold] size-3 transition-transform duration-200 group-open/github:rotate-180" />
+            </summary>
+            <div class="absolute top-full left-0 z-20 mt-1.5 min-w-40 overflow-hidden rounded-xl border border-border bg-background py-1 shadow-lg">
+              {githubUrls.map((href) => (
+                <a
+                  href={href}
+                  target={isExternal(href) ? '_blank' : undefined}
+                  rel={isExternal(href) ? 'noopener noreferrer' : undefined}
+                  class="flex items-center gap-1.5 px-3 py-2 text-xs text-muted-foreground transition-colors duration-150 hover:bg-muted/40 hover:text-foreground"
+                >
+                  <span class="icon-[mdi--github] size-3.5" />
+                  {githubLabel(href)}
+                </a>
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
+    )
+  }
+</div>

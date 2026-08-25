@@ -49,7 +49,7 @@ const ThemeToggle = () => {
   const applyTheme = (newTheme: string) => {
     const root = document.documentElement
 
-    // 添加过渡类
+    // Add transition-disabling class
     root.classList.add('disable-transition')
 
     const isDark = newTheme === 'dark' || (newTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
@@ -60,7 +60,7 @@ const ThemeToggle = () => {
       metaThemeColor.setAttribute('content', isDark ? '#09090b' : '#FFFFFF')
     }
 
-    // 移除过渡类
+    // Remove transition-disabling class
     setTimeout(() => {
       root.classList.remove('disable-transition')
     }, 300)
@@ -76,7 +76,7 @@ const ThemeToggle = () => {
   }
 
   return (
-    <button onClick={handleClick} className="relative size-5 flex items-center justify-center cursor-pointer" aria-label="切换主题">
+    <button onClick={handleClick} className="relative size-5 flex items-center justify-center cursor-pointer" aria-label="Toggle theme">
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className="relative size-5 flex items-center justify-center">
         <motion.div
           className="absolute inset-0"

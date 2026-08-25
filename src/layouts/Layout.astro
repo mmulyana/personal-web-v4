@@ -6,7 +6,6 @@ import '~/styles/github-card.css'
 import { SITE } from '~/config'
 import Head from '~/components/base/Head.astro'
 import Header from './Header.astro'
-import Footer from './Footer.astro'
 
 type Props = {
   title: string
@@ -25,10 +24,9 @@ const { title, description, image }: Props = Astro.props
   <body class="flex flex-col">
     <Header />
     <div class="grow flex">
-      <main class="relative border-x border-border/50 global-layout-width mx-auto grow min-w-0">
+      <main class="relative mx-auto w-full grow min-w-0">
         <slot />
       </main>
     </div>
-    <Footer />
   </body>
 </html>

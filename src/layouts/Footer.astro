@@ -1,8 +1,7 @@
 ---
-import { FOOTER_LINKS, SITE } from '~/config'
-import SectionDivider from '~/components/base/SectionDivider.astro'
-import ThemeToggle from '~/components/theme/ThemeToggle'
-import FooterLink from '~/components/base/FooterLink.astro'
+import { SITE } from '~/config'
+
+type Props = {}
 
 const START_YEAR = 2025
 const currentYear = new Date().getFullYear()
@@ -10,7 +9,7 @@ const yearDisplay = currentYear > START_YEAR ? `${START_YEAR} - ${currentYear}` 
 ---
 
 <footer>
-  <div class="py-4 flex-none border-x border-border/50 global-layout-width mx-auto">
+  <div class:list={['py-4 flex-none mx-auto max-w-2xl w-full']}>
     <div class="border-t border-border/50">
       <div class="text-sm text-muted-foreground px-6 sm:px-8 py-4">
         <div class="items-center flex flex-wrap gap-4 font-medium justify-center">

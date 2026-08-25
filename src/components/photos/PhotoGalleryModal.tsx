@@ -22,14 +22,14 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
   const gap = 16 // gap-4 = 1rem = 16px
   const [canAnimate, setCanAnimate] = useState(false)
 
-  // 动态获取容器宽度，适配响应式
+  // Dynamically get container width for responsive layout
   useEffect(() => {
     if (containerRef.current) {
       setContainerWidth(containerRef.current.offsetWidth)
     }
   }, [isOpen])
 
-  // 切换图片时，平滑动画到目标位置
+  // Smoothly animate to the target position when switching images
   useEffect(() => {
     if (!isOpen) return
     if (canAnimate) {
@@ -48,7 +48,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
     }
   }, [isOpen, initialIndex, x, containerWidth, gap])
 
-  // 更新高度
+  // Update height
   useEffect(() => {
     const updateHeight = () => {
       const el = imageRefs.current[currentIndex]
@@ -56,17 +56,17 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
         setCurrentHeight(el.offsetHeight)
       }
     }
-    // 稍微延迟以确保渲染完成
+    // Slight delay to ensure rendering is complete
     const timer = setTimeout(updateHeight, 10)
     return () => clearTimeout(timer)
   }, [currentIndex, containerWidth, isOpen])
 
   useEffect(() => {
-    const top = window.scrollY // 记录当前滚动位置
+    const top = window.scrollY // Record current scroll position
     if (isOpen) {
-      // 计算滚动条宽度
+      // Calculate scrollbar width
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
-      // 防止背景滚动，同时补偿滚动条宽度以保持布局
+      // Prevent background scrolling, and compensate for scrollbar width to keep the layout stable
       document.body.style.overflow = 'hidden'
       document.body.style.paddingRight = `${scrollbarWidth}px`
     } else {
@@ -76,7 +76,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
     }
   }, [isOpen])
 
-  // 拖拽结束时吸附到最近图片，判定边界放宽到 7%
+  // Snap to the nearest image when dragging ends; threshold loosened to 7%
   const handleDragEnd = useCallback(
     (_: any, info: { offset: { x: number } }) => {
       const offset = info.offset.x
@@ -93,7 +93,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
     [containerWidth, gap, photos.length, x, currentIndex]
   )
 
-  // 按钮切换
+  // Button navigation
   const goPrev = () => {
     if (currentIndex > 0) setCurrentIndex((i) => i - 1)
   }
@@ -101,7 +101,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
     if (currentIndex < photos.length - 1) setCurrentIndex((i) => i + 1)
   }
 
-  // 键盘切换
+  // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -127,7 +127,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15, ease: 'easeOut' }}
         >
-          {/* 遮罩层 */}
+          {/* Overlay */}
           <motion.div
             className="absolute inset-0 bg-black/50 h-[100dvh]"
             initial={{ opacity: 0 }}
@@ -136,7 +136,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
             transition={{ duration: 0.2, ease: 'easeInOut' }}
           />
 
-          {/* 弹窗卡片 */}
+          {/* Modal card */}
           <motion.div
             key="modal-content"
             className="relative bg-background shadow-2xl max-w-lg w-full mx-4 p-6"
@@ -146,7 +146,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
             exit={{ opacity: 0, y: -60, scale: 0.9 }}
             transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94], opacity: { duration: 0.25 } }}
           >
-            {/* 头部标题区域 */}
+            {/* Header title area */}
             <div className="border-gray-100 mb-6">
               <div className="flex items-start justify-between">
                 <div>
@@ -159,7 +159,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
               </div>
             </div>
 
-            {/* 图片展示区域 */}
+            {/* Image display area */}
             <div className="relative bg-background" ref={containerRef}>
               <motion.div
                 className="relative overflow-hidden"
@@ -205,7 +205,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
                 </motion.div>
               </motion.div>
 
-              {/* 左右导航按钮 */}
+              {/* Left/right navigation buttons */}
               {photos.length > 1 && (
                 <>
                   <button
@@ -216,7 +216,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
                         ? 'bg-muted text-muted-foreground cursor-not-allowed'
                         : 'bg-background hover:bg-accent text-foreground hover:text-accent-foreground'
                     }`}
-                    aria-label="上一张"
+                    aria-label="Previous"
                   >
                     <div className="w-5 h-5 icon-[mdi--chevron-left]"></div>
                   </button>
@@ -228,7 +228,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
                         ? 'bg-muted text-muted-foreground cursor-not-allowed'
                         : 'bg-background hover:bg-accent text-foreground hover:text-accent-foreground'
                     }`}
-                    aria-label="下一张"
+                    aria-label="Next"
                   >
                     <div className="w-5 h-5 icon-[mdi--chevron-right]"></div>
                   </button>
@@ -236,7 +236,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
               )}
             </div>
 
-            {/* 计数器 */}
+            {/* Counter */}
             <div className="mt-4 text-center text-sm text-muted-foreground font-medium">
               {currentIndex + 1} / {photos.length}
             </div>
@@ -246,7 +246,7 @@ const PhotoGalleryModal: React.FC<Props> = ({ photos, title, description, isOpen
     </AnimatePresence>
   )
 
-  // 使用 Portal 将弹窗渲染到 body
+  // Render the modal into body using a Portal
   return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : null
 }
 

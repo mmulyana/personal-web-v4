@@ -1,0 +1,194 @@
+---
+export type SocialPreviewVariant = 'x' | 'linkedin' | 'github' | 'threads'
+
+interface Props {
+  variant: SocialPreviewVariant
+}
+
+const { variant } = Astro.props
+
+// Static preview content per platform — no fetching, just markup for now.
+const PREVIEWS = {
+  x: {
+    avatar: '/avatar.svg',
+    name: 'Mulyana',
+    verified: true,
+    handle: '@mmulyana',
+    bio: 'Frontend Engineer building polished web products. Side projects: My Note & My Todo.',
+    following: 128,
+    followers: 342,
+  },
+  linkedin: {
+    avatar: '/avatar.svg',
+    name: 'Mulyana',
+    headline: 'Frontend Developer at MEA Digital Marketing',
+    location: 'Indonesia',
+    connections: '500+ connections',
+  },
+  github: {
+    avatar: '/avatar.svg',
+    name: 'Mulyana',
+    username: 'mmulyana',
+    bio: 'Frontend developer. Building small products on the side.',
+    repositories: 24,
+    followers: 58,
+    following: 40,
+  },
+  threads: {
+    avatar: '/avatar.svg',
+    name: 'Mulyana',
+    handle: '@mmulyana_',
+    bio: 'Frontend dev, building small things on the side.',
+    followers: 210,
+  },
+} satisfies Record<SocialPreviewVariant, unknown>
+
+const x = PREVIEWS.x
+const linkedin = PREVIEWS.linkedin
+const github = PREVIEWS.github
+const threads = PREVIEWS.threads
+---
+
+<div
+  class="pointer-events-none absolute left-0 top-full z-20 w-72 pt-2 opacity-0 transition-opacity duration-150 group-hover/social:pointer-events-auto group-hover/social:opacity-100"
+>
+  {
+    variant === 'x' && (
+      <div class="rounded-2xl border border-border bg-background p-4 shadow-lg">
+        <div class="flex items-start justify-between gap-3">
+          <img src={x.avatar} alt={x.name} width="48" height="48" class="size-12 shrink-0 rounded-full border border-border object-cover" />
+          <button type="button" tabindex="-1" class="rounded-full bg-foreground px-4 py-1.5 text-sm font-semibold text-background">
+            Follow
+          </button>
+        </div>
+
+        <div class="mt-3">
+          <div class="flex items-center gap-1">
+            <p class="truncate font-semibold text-foreground">{x.name}</p>
+            {x.verified && <span class="icon-[ri--verified-badge-fill] size-4 shrink-0 text-blue-500" />}
+          </div>
+          <p class="text-sm text-muted-foreground">{x.handle}</p>
+        </div>
+
+        <p class="mt-3 text-sm leading-relaxed text-foreground/90">{x.bio}</p>
+
+        <div class="mt-3 flex items-center gap-4 text-sm">
+          <p class="text-foreground">
+            <span class="font-semibold">{x.following}</span> <span class="text-muted-foreground">Following</span>
+          </p>
+          <p class="text-foreground">
+            <span class="font-semibold">{x.followers}</span> <span class="text-muted-foreground">Followers</span>
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    variant === 'linkedin' && (
+      <div class="rounded-lg border border-border bg-background p-4 shadow-lg">
+        <div class="flex items-start gap-3">
+          <img
+            src={linkedin.avatar}
+            alt={linkedin.name}
+            width="56"
+            height="56"
+            class="size-14 shrink-0 rounded-full border border-border object-cover"
+          />
+          <div class="min-w-0 pt-0.5">
+            <p class="truncate font-semibold text-foreground">{linkedin.name}</p>
+            <p class="text-sm leading-snug text-muted-foreground">{linkedin.headline}</p>
+          </div>
+        </div>
+
+        <p class="mt-3 text-xs text-muted-foreground">
+          {linkedin.location} · {linkedin.connections}
+        </p>
+
+        <div class="mt-3 flex gap-2">
+          <button type="button" tabindex="-1" class="flex-1 rounded-full bg-[#0a66c2] px-4 py-1.5 text-sm font-semibold text-white">
+            Connect
+          </button>
+          <button
+            type="button"
+            tabindex="-1"
+            class="flex-1 rounded-full border border-[#0a66c2] px-4 py-1.5 text-sm font-semibold text-[#0a66c2]"
+          >
+            Message
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    variant === 'github' && (
+      <div class="rounded-2xl border border-border bg-background p-4 shadow-lg">
+        <div class="flex items-start gap-3">
+          <img
+            src={github.avatar}
+            alt={github.name}
+            width="56"
+            height="56"
+            class="size-14 shrink-0 rounded-full border border-border object-cover"
+          />
+          <div class="min-w-0 pt-0.5">
+            <p class="truncate font-semibold text-foreground">{github.name}</p>
+            <p class="text-sm text-muted-foreground">@{github.username}</p>
+          </div>
+        </div>
+
+        <p class="mt-3 text-sm leading-relaxed text-foreground/90">{github.bio}</p>
+
+        <div class="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span class="icon-[ri--book-2-line] size-3.5 shrink-0" />
+          {github.repositories} repositories
+        </div>
+
+        <div class="mt-3 flex items-center justify-between gap-2">
+          <p class="text-sm text-muted-foreground">
+            <span class="font-semibold text-foreground">{github.followers}</span> followers ·{' '}
+            <span class="font-semibold text-foreground">{github.following}</span> following
+          </p>
+          <button
+            type="button"
+            tabindex="-1"
+            class="shrink-0 rounded-md border border-border px-3 py-1 text-xs font-semibold text-foreground"
+          >
+            Follow
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    variant === 'threads' && (
+      <div class="rounded-2xl border border-border bg-background p-4 shadow-lg">
+        <div class="flex items-start justify-between gap-3">
+          <img
+            src={threads.avatar}
+            alt={threads.name}
+            width="48"
+            height="48"
+            class="size-12 shrink-0 rounded-full border border-border object-cover"
+          />
+          <button type="button" tabindex="-1" class="rounded-full bg-foreground px-4 py-1.5 text-sm font-semibold text-background">
+            Follow
+          </button>
+        </div>
+
+        <div class="mt-3">
+          <p class="truncate font-semibold text-foreground">{threads.name}</p>
+          <p class="text-sm text-muted-foreground">{threads.handle}</p>
+        </div>
+
+        <p class="mt-3 text-sm leading-relaxed text-foreground/90">{threads.bio}</p>
+
+        <p class="mt-3 text-sm text-muted-foreground">
+          <span class="font-semibold text-foreground">{threads.followers}</span> followers
+        </p>
+      </div>
+    )
+  }
+</div>

@@ -42,15 +42,28 @@ const projects = defineCollection({
     z.object({
       name: z.string(),
       description: z.string(),
-      githubUrl: z.string(),
-      website: z.string(),
+      // Sort key for the home feed; undated projects sort last and hide the date
+      date: z.date().optional(),
+      // Both optional — a project can link to either, both, or neither (detail-only)
+      // githubUrls is a list so a project with separate FE/BE repos can link both
+      githubUrls: z.array(z.string()).optional(),
+      website: z.string().optional(),
+      // Tech stack pills shown on the project detail page
+      stack: z.array(z.string()).optional(),
       type: z.string(),
       icon: image().optional(),
+      // Background thumbnail on the home feed card, half-width behind the text
+      thumbnail: image().optional(),
       imageClass: z.string().optional(),
       star: z.number(),
       fork: z.number(),
+      pinned: z.boolean().default(false),
+      order: z.number().default(0),
       draft: z.boolean().default(false),
       hidden: z.boolean().default(false),
+      // When true, clicking the project opens its own write-up (the .mdx body below)
+      // at /projects/<id> instead of jumping straight to `website`/`githubUrl`.
+      hasDetail: z.boolean().default(false),
     }),
 })
 

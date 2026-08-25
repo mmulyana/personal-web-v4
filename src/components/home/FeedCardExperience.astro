@@ -1,0 +1,95 @@
+---
+import type { FeedItem } from '~/types'
+import { cn, formatDate } from '~/lib/utils'
+
+interface Props {
+  item: FeedItem
+}
+
+const { item }: Props = Astro.props
+const { title, subtitle, description, bullets, skills, date, endDate, dateLabel, logo } = item
+
+const meta = dateLabel ?? (date ? formatDate(date, 'feed') : null)
+const placeholderLetter = logo ? null : (subtitle ?? title).trim().charAt(0).toUpperCase()
+---
+
+<div class="flex gap-3 px-4 py-4">
+  <div class={cn('size-10 shrink-0 overflow-hidden rounded-xl border border-border/60 bg-muted/40 flex justify-center items-center')}>
+    {
+      logo ? (
+        <img src={logo} alt={title} width="72" height="72" loading="lazy" class="size-6 object-cover" />
+      ) : (
+        <div class="flex size-full items-center justify-center bg-muted text-sm font-semibold text-muted-foreground">
+          {placeholderLetter}
+        </div>
+      )
+    }
+  </div>
+  <div class="min-w-0 grow">
+    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+      <h3 class="min-w-0 text-[0.9375rem] font-semibold tracking-tight text-pretty">{title}</h3>
+      {
+        meta && (
+          <span class="shrink-0 text-xs whitespace-nowrap text-muted-foreground">
+            {meta}
+            {date && (
+              <span data-experience-duration data-start={date.toISOString()} data-end={endDate?.toISOString() ?? ''} />
+            )}
+          </span>
+        )
+      }
+    </div>
+
+    {subtitle && <p class="mt-0.5 text-sm font-medium text-muted-foreground">{subtitle}</p>}
+
+    {description && <p class="mt-1.5 text-[0.9375rem] leading-relaxed text-muted-foreground text-pretty">{description}</p>}
+
+    {
+      bullets && bullets.length > 0 && (
+        <ul class="mt-2 space-y-1 pl-4 text-sm leading-relaxed text-muted-foreground">
+          {bullets.map((bullet) => (
+            <li class="list-disc text-pretty marker:text-muted-foreground/50">{bullet}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      skills && skills.length > 0 && (
+        <ul class="mt-2.5 flex flex-wrap gap-1.5">
+          {skills.map((skill) => (
+            <li class="rounded-full bg-muted/40 px-2 py-0.5 text-xs font-medium text-muted-foreground">{skill}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</div>
+
+<script>
+  // Computed in the browser so an ongoing role's duration ("9 mos" -> "10 mos" ...) stays
+  // correct as time passes, without needing a rebuild.
+  function formatDuration(startIso: string, endIso: string): string {
+    const start = new Date(startIso)
+    const end = endIso ? new Date(endIso) : new Date()
+    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1
+    if (months <= 0) return ''
+
+    const years = Math.floor(months / 12)
+    const remMonths = months % 12
+    const parts: string[] = []
+    if (years > 0) parts.push(`${years} ${years === 1 ? 'yr' : 'yrs'}`)
+    if (remMonths > 0 || years === 0) parts.push(`${remMonths} ${remMonths === 1 ? 'mo' : 'mos'}`)
+    return parts.join(' ')
+  }
+
+  function renderExperienceDurations() {
+    for (const el of document.querySelectorAll<HTMLElement>('[data-experience-duration]')) {
+      const duration = formatDuration(el.dataset.start ?? '', el.dataset.end ?? '')
+      el.textContent = duration ? ` · ${duration}` : ''
+    }
+  }
+
+  renderExperienceDurations()
+  document.addEventListener('astro:page-load', renderExperienceDurations)
+</script>

@@ -23,10 +23,10 @@ const polaroidVariants: Record<PolaroidVariant, string> = {
 
 const PolaroidCard: React.FC<Props> = ({ photo, index, totalPhotos, rotation, variant, isVisible, isClicked = false }) => {
   const baseZIndex = totalPhotos - index
-  // 根据图片位置计算移动距离，后面的图片移动得更多
-  const moveDistance = index === 0 ? 0 : 25 // 第一张20px，第二张40px，第三张60px...
+  // Calculate move distance based on image position; later images move further
+  const moveDistance = index === 0 ? 0 : 25 // First image 20px, second 40px, third 60px...
 
-  // 处理图片源：支持字符串路径和 Astro ImageMetadata 对象
+  // Handle image source: supports both string paths and Astro ImageMetadata objects
   const imgSrc = typeof photo.src === 'string' ? photo.src : photo.src.src
   const imgWidth = typeof photo.src === 'string' ? photo.width : photo.src.width
   const imgHeight = typeof photo.src === 'string' ? photo.height : photo.src.height
@@ -52,7 +52,7 @@ const PolaroidCard: React.FC<Props> = ({ photo, index, totalPhotos, rotation, va
           scale: 1,
           rotate: rotation,
           x: 0,
-          transition: { duration: 0.1 }, // 快速归位
+          transition: { duration: 0.1 }, // Snap back quickly
         },
       }}
       viewport={{ once: true }}
@@ -60,17 +60,17 @@ const PolaroidCard: React.FC<Props> = ({ photo, index, totalPhotos, rotation, va
         type: 'spring',
         stiffness: 360,
         damping: 20,
-        delay: index * 0.05, // 错开动画
+        delay: index * 0.05, // Stagger the animation
         duration: 0.8,
       }}
       whileHover={
         isClicked
           ? {}
           : {
-              // 点击时禁用 hover 效果
-              x: moveDistance, // 根据位置动态移动距离
+              // Disable hover effect when clicked
+              x: moveDistance, // Move distance dynamically based on position
               scale: 1.2,
-              rotate: 0, // hover时取消倾斜，回到水平，
+              rotate: 0, // Remove the tilt on hover, returning to horizontal
               transition: {
                 type: 'tween',
                 stiffness: 1360,

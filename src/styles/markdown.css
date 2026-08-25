@@ -633,7 +633,6 @@ image-figure-polaroid {
   }
 }
 
-/* ===== 响应式设计 ===== */
 @media (width <= 768px) {
   image-figure-polaroid {
     margin-inline: 10%;

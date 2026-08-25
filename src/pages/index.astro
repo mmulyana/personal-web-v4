@@ -1,236 +1,37 @@
 ---
-import { SITE, SKILLSSHOWCASE_CONFIG, SOCIAL_LINKS } from '~/config'
-import { GITHUB_CONFIG, POSTS_CONFIG } from '~/config'
-import { Image } from 'astro:assets'
-import { differenceInMonths, differenceInYears } from 'date-fns'
+import ProfileHeader from '~/components/home/ProfileHeader.astro'
+import FeedTabs from '~/components/home/FeedTabs.astro'
+import FeedCard from '~/components/home/FeedCard.astro'
+import { FEED_CONFIG, SITE } from '~/config'
 import Layout from '~/layouts/Layout.astro'
-import SectionDivider from '~/components/base/SectionDivider.astro'
-import GithubContributions from '~/components/base/GithubContributions'
-import SocialLink from '~/components/base/SocialLink.astro'
-import List from '~/components/posts/card/List.astro'
-import SkillsShowcase from '~/components/base/SkillsShowcase.astro'
-import TutorialList from '~/components/tutorials/TutorialList.astro'
-import { getAllProjects, getNumPosts, getPinnedPosts, getVisibleTutorials } from '~/lib/data'
-import mea from '../assets/photos/mea.png'
-import bitkreasi from '../assets/photos/bitkreasi.png'
-import kecilin from '../assets/photos/kecilin.png'
-import rakamin from '../assets/photos/rakamin.png'
+import { getVisibleFeed } from '~/lib/data'
 
-const { ENABLED, GITHUB_USERNAME, TOOLTIP_ENABLED } = GITHUB_CONFIG
-const { size, type } = POSTS_CONFIG.homePageConfig
-const { SKILLS_ENABLED, SKILLS_DATA } = SKILLSSHOWCASE_CONFIG
-
-let showPosts = []
-const pinnedPosts = await getPinnedPosts()
-const hasPinnedPosts = pinnedPosts.length > 0
-if (hasPinnedPosts) {
-  showPosts = pinnedPosts
-} else {
-  showPosts = await getNumPosts(size)
-}
-
-const tutorials = await getVisibleTutorials()
-const showTutorials = tutorials.slice(0, 2)
-
-const projects = await getAllProjects()
-const showProjects = projects.slice(0, 3)
-
-const formatDuration = (startDate: Date) => {
-  const now = new Date()
-  const years = differenceInYears(now, startDate)
-  const months = differenceInMonths(now, startDate) % 12
-
-  const parts = []
-  if (years > 0) parts.push(`${years} yr${years > 1 ? 's' : ''}`)
-  if (months > 0) parts.push(`${months} mo${months > 1 ? 's' : ''}`)
-
-  return parts.length > 0 ? parts.join(' ') : '0 mos'
-}
-
-const EXPERIENCES = [
-  {
-    period: 'Dec 2025 - Now',
-    duration: formatDuration(new Date('2025-12-01')),
-    role: 'Frontend Developer',
-    company: 'Mea Digital Marketing',
-    logo: mea,
-    description: '',
-  },
-  {
-    period: 'May - Aug 2024',
-    duration: '3 mos',
-    role: 'Frontend Developer Intern',
-    company: 'Rakamin',
-    logo: rakamin,
-    description: 'Enhanced the hiring workflow by redesigning talent processes to reduce steps and streamline recruiter operations.',
-  },
-  {
-    period: 'Jan - Apr 2024',
-    duration: '4 mos',
-    role: 'Software Engineer Intern',
-    company: 'Bitkreasi',
-    logo: bitkreasi,
-    description:
-      'Contributed to the development of the Asadesa information system, a web platform built with Next.js and Express.js to improve village-level data management.',
-  },
-  {
-    period: 'Jul - Oct 2023',
-    duration: '3 mos',
-    role: 'Frontend Developer Intern',
-    company: 'Kecilin',
-    logo: kecilin,
-    description:
-      'Contributed web applications across banking and transportation sectors, created a reusable Laravel template to speed up delivery, and revamped the kecilin.id landing page.',
-  },
-]
+const feed = FEED_CONFIG.ENABLED ? await getVisibleFeed() : []
+const initialTab = FEED_CONFIG.TABS[0]?.key ?? 'featured'
 ---
 
 <Layout title="Readme" description={SITE.description}>
-  <div>
-    <div class="py-8 pb-10 px-6 sm:px-8">
-      <h1 class="flex flex-col gap-2">
-        <span class="text-4xl sm:text-5xl tracking-tight">Mulyana A</span>
-        <span class="text-muted-foreground font-light text-xl sm:text-2xl block tracking-wide text-balance"> Frontend Developer </span>
-      </h1>
-      <div class="pro text-muted-foreground text-pretty">
-        <p>Currently enjoying building personal software just for fun.</p>
-      </div>
-      <div class="mt-6 flex gap-6">
-        {
-          SOCIAL_LINKS.map((item: any) => {
-            return <SocialLink href={item.url} icon={item.icon} aria-label={`Link of ${item.name}`} count={item.count} label="followers" />
-          })
-        }
-      </div>
-    </div>
+  <div class="mx-auto w-full max-w-2xl space-y-12 px-6 pb-10 sm:px-8 sm:pb-14">
+    <ProfileHeader />
+
     {
-      ENABLED && (
-        <>
-          <SectionDivider />
-          <div class="py-8 pb-10 px-6 max-md:px-6">
-            <div class="px-2 max-md:px-0">
-              <h2 class="text-lg sm:text-xl tracking-tight">Spotlight</h2>
-              <p class="text-muted-foreground/60 mb-6 mt-1">GitHub contributions in the past year:</p>
-            </div>
-            <GithubContributions username={GITHUB_USERNAME} tooltipEnabled={TOOLTIP_ENABLED} client:load transition:animate="none" />
+      feed.length > 0 && (
+        <section class="space-y-4">
+          <div class="flex justify-center">
+            <FeedTabs tabs={FEED_CONFIG.TABS} />
           </div>
-        </>
+
+          <div class="flex flex-col gap-4" data-feed-list data-feed-active={initialTab}>
+            {feed.map((item) => (
+              <FeedCard item={item} activeTab={initialTab} />
+            ))}
+          </div>
+
+          <p class="hidden py-10 text-center text-sm text-muted-foreground" data-feed-empty>
+            {FEED_CONFIG.EMPTY_TEXT}
+          </p>
+        </section>
       )
     }
-    {
-      SKILLS_ENABLED && SKILLS_DATA.length > 0 && (
-        <>
-          <SectionDivider />
-          <div class="py-8 pb-10 px-6 max-md:px-6">
-            <div class="px-2 max-md:px-0">
-              <h2 class="text-lg sm:text-xl tracking-tight">Skills</h2>
-              <p class="text-muted-foreground/60 mb-6 mt-1">It's not just skills, but also tools:</p>
-            </div>
-            <SkillsShowcase skillsData={SKILLS_DATA} />
-          </div>
-        </>
-      )
-    }
-    <SectionDivider />
-    <div class="py-8 pb-10 px-6 sm:px-8">
-      <h2 class="text-lg sm:text-xl tracking-tight">Experience</h2>
-      <p class="text-muted-foreground/60 mt-1">
-        Throughout my career, I&apos;ve worked on various projects, from building scalable systems to designing user-friendly interfaces.
-        Here&apos;s a brief overview.
-      </p>
-
-      <div class="mt-10 space-y-10">
-        {
-          EXPERIENCES.map((item) => (
-            <div class="grid gap-3 sm:gap-4 sm:grid-cols-[10rem_1fr]">
-              <div class="text-xs sm:text-sm text-muted-foreground tracking-wide flex flex-row md:flex-col gap-x-2">
-                <p class="text-white">{item.period}</p>
-                <p>({item.duration})</p>
-              </div>
-              <div>
-                <div class="flex flex-wrap items-center gap-x-2 gap-y-2">
-                  <div class="text-base font-semibold">{item.role}</div>
-                  <div class="text-muted-foreground">at</div>
-                  <div class="flex items-center gap-2 p-2">
-                    {item?.logo && <Image src={item.logo} alt={item.company} class="size-5 object-cover" />}
-                    <div class="text-base font-semibold">{item.company}</div>
-                  </div>
-                </div>
-                <p class="mt-2 text-muted-foreground text-pretty">{item.description}</p>
-              </div>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-    <SectionDivider />
-    <div class="py-8 pb-10 px-6 sm:px-8">
-      <div class="flex items-center justify-between gap-4">
-        <h2 class="text-lg sm:text-xl tracking-tight">Projects</h2>
-        <a
-          href="/projects"
-          class="hidden sm:inline-flex items-center gap-1 text-xs font-medium tracking-widest text-muted-foreground uppercase hover:text-primary transition-colors"
-        >
-          View all
-          <span class="icon-[ph--arrow-right] size-4"></span>
-        </a>
-      </div>
-      <p class="text-muted-foreground/60 mt-1">Some things I&apos;ve been building lately.</p>
-
-      <div class="mt-10 grid grid-cols-1 gap-6">
-        {
-          showProjects.map((project) => (
-            <a
-              href={project.data.website}
-              target="_blank"
-              class="group block overflow-hidden rounded-2xl border border-border/50 bg-background hover:bg-muted/20 transition-colors"
-            >
-              <div class="grid gap-4 sm:grid-cols-[1fr_320px] h-full">
-                <div class="p-4 sm:p-5 h-full flex flex-col justify-between">
-                  <p class="text-xs font-medium tracking-widest text-muted-foreground uppercase">Work</p>
-                  <div>
-                    <p class="mt-2 text-xl font-semibold leading-tight">{project.data.name}</p>
-                    <p class="mt-1 text-sm text-muted-foreground line-clamp-2">{project.data.description}</p>
-                  </div>
-                </div>
-
-                <div class="sm:border-l border-border/50 h-full">
-                  {project.data.type === 'image' && project.data.icon ? (
-                    <div class="relative h-[200px] bg-muted/10">
-                      <Image
-                        src={project.data.icon}
-                        alt={project.data.name}
-                        width={1200}
-                        height={675}
-                        class="w-full h-full object-cover opacity-80 group-hover:opacity-100"
-                        densities={[1, 2]}
-                        loading="lazy"
-                      />
-                    </div>
-                  ) : (
-                    <div class="h-[200px] bg-muted/10" />
-                  )}
-                </div>
-              </div>
-            </a>
-          ))
-        }
-      </div>
-    </div>
-    <SectionDivider />
-    <div class="py-8 pb-10 px-6 sm:px-8">
-      <h2 class="text-lg sm:text-xl tracking-tight">Posts</h2>
-      <p class="text-muted-foreground/60 mb-6 mt-1">
-        {hasPinnedPosts ? `Pinned` : 'Recent'}
-        {showPosts.length} posts, worth a look.
-      </p>
-      <List posts={showPosts} {type} coverLayout={POSTS_CONFIG.homePageConfig?.coverLayout} />
-    </div>
-    <SectionDivider />
-    <div class="py-8 pb-10 px-6 sm:px-8">
-      <h2 class="text-lg sm:text-xl tracking-tight">Tutorials</h2>
-      <p class="text-muted-foreground/60 mb-8 mt-1">Step-by-step guides for building modern web applications.</p>
-      <TutorialList tutorials={showTutorials} />
-    </div>
   </div>
 </Layout>

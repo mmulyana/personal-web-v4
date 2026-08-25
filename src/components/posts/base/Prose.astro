@@ -28,7 +28,7 @@ const { class: className } = Astro.props
     lqipImages.forEach((img) => {
       const imageEl = img as HTMLImageElement
 
-      // 去除占位符，避免闪烁
+      // Remove the placeholder to avoid a flash
       function handleImageLoad() {
         imageEl.style.removeProperty('--lqip')
       }
@@ -56,7 +56,7 @@ const { class: className } = Astro.props
       })
     }
 
-    // 监听暗色模式变化
+    // Watch for dark mode changes
     const observer = new MutationObserver(() => {
       darkModeHandler()
     })
@@ -68,7 +68,7 @@ const { class: className } = Astro.props
       })
       darkModeHandler()
 
-      // 监听 hover 事件
+      // Listen for hover events
       document.querySelectorAll('.markdown :not(image-figure-polaroid) img:not(.noDarken)').forEach((img) => {
         img.addEventListener('mouseenter', () => {
           img.style.removeProperty('filter')

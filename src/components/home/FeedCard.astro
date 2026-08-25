@@ -1,0 +1,52 @@
+---
+import type { FeedItem } from '~/types'
+import { cn } from '~/lib/utils'
+import FeedCardExperience from './FeedCardExperience.astro'
+import FeedCardPost from './FeedCardPost.astro'
+import FeedCardProject from './FeedCardProject.astro'
+
+interface Props {
+  item: FeedItem
+  activeTab: string
+}
+
+const { item, activeTab }: Props = Astro.props
+const { id, type, url, website, featured, order, githubUrls } = item
+
+// Matches the client-side filter in FeedTabs.astro — pre-hides non-matching cards so
+// there's no flash of the unfiltered list before the tab script runs on hydration.
+const matchesActiveTab = activeTab === 'featured' ? !!featured : type === activeTab
+
+// Project cards carry their own Details/Website/GitHub buttons, so the whole card
+// can't also be one big <a> — that would nest anchors. Every other type still is.
+const isCardLink = !!url && type !== 'project'
+const isExternal = isCardLink && /^https?:\/\//.test(url!)
+const Tag = isCardLink ? 'a' : 'div'
+const linkProps = isCardLink ? { href: url, ...(isExternal && { target: '_blank', rel: 'noopener noreferrer' }) } : {}
+const hasHoverAffordance = isCardLink || (type === 'project' && (!!url || !!website || !!githubUrls?.length))
+---
+
+<Tag
+  {...linkProps}
+  data-feed-item
+  data-feed-id={id}
+  data-feed-type={type}
+  data-feed-featured={featured ? '' : undefined}
+  style={order === undefined ? undefined : `--feed-order:${order}`}
+  class={cn(
+    'group block rounded-2xl border border-border bg-background no-underline',
+    'transition-colors duration-200',
+    hasHoverAffordance && 'hover:border-foreground/20',
+    !matchesActiveTab && 'hidden'
+  )}
+>
+  {
+    type === 'experience' ? (
+      <FeedCardExperience item={item} />
+    ) : type === 'project' ? (
+      <FeedCardProject item={item} />
+    ) : (
+      <FeedCardPost item={item} />
+    )
+  }
+</Tag>

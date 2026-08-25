@@ -1,0 +1,87 @@
+---
+import type { FeedTab } from '~/types'
+import { cn } from '~/lib/utils'
+
+interface Props {
+  tabs: FeedTab[]
+}
+
+const { tabs }: Props = Astro.props
+
+// Rendered as a segmented control, deliberately distinct from the standalone SocialPill chips above
+---
+
+<div class="no-scrollbar -mx-1 overflow-x-auto px-1 py-1">
+  <div
+    class="inline-flex w-max gap-0.5 rounded-xl border border-border/60 bg-muted/40 p-1"
+    role="tablist"
+    aria-label="Feed filter"
+    data-feed-tabs
+  >
+    {
+      tabs.map((tab, index) => (
+        <button
+          type="button"
+          role="tab"
+          data-feed-tab={tab.key}
+          aria-selected={index === 0 ? 'true' : 'false'}
+          class={cn(
+            'group inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5',
+            'text-[0.8125rem] font-medium transition-colors duration-200',
+            'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background',
+            'text-muted-foreground hover:text-foreground',
+            'aria-selected:bg-background aria-selected:text-foreground aria-selected:shadow-sm'
+          )}
+        >
+          <span class={cn('size-4 shrink-0 opacity-50 transition-opacity duration-200 group-aria-selected:opacity-100', tab.icon)} />
+          {tab.label}
+        </button>
+      ))
+    }
+  </div>
+</div>
+
+<style is:global>
+  /* Under Featured, follow the order in FEED_CONFIG.FEATURED */
+  [data-feed-list][data-feed-active='featured'] [data-feed-item] {
+    order: var(--feed-order, 0);
+  }
+</style>
+
+<script>
+  const setupFeedTabs = () => {
+    const tabsRoot = document.querySelector<HTMLElement>('[data-feed-tabs]')
+    const list = document.querySelector<HTMLElement>('[data-feed-list]')
+    if (!tabsRoot || !list) return
+
+    const tabs = Array.from(tabsRoot.querySelectorAll<HTMLButtonElement>('[data-feed-tab]'))
+    const items = Array.from(list.querySelectorAll<HTMLElement>('[data-feed-item]'))
+    const empty = document.querySelector<HTMLElement>('[data-feed-empty]')
+
+    const apply = (key: string) => {
+      let visible = 0
+      for (const item of items) {
+        // Featured is the hand-picked list; every other tab filters by type
+        const match = key === 'featured' ? item.dataset.feedFeatured !== undefined : item.dataset.feedType === key
+        item.classList.toggle('hidden', !match)
+        if (match) visible++
+      }
+      // Only the Featured tab honours --feed-order
+      list.dataset.feedActive = key
+      empty?.classList.toggle('hidden', visible > 0)
+      for (const tab of tabs) {
+        tab.setAttribute('aria-selected', String(tab.dataset.feedTab === key))
+      }
+    }
+
+    for (const tab of tabs) {
+      tab.addEventListener('click', () => apply(tab.dataset.feedTab ?? 'featured'))
+    }
+
+    // The default tab is no longer "all", so the initial state needs filtering too
+    apply(tabs.find((tab) => tab.getAttribute('aria-selected') === 'true')?.dataset.feedTab ?? 'featured')
+  }
+
+  setupFeedTabs()
+  document.addEventListener('astro:page-load', setupFeedTabs)
+</script>

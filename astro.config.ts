@@ -23,5 +23,15 @@ export default defineConfig({
     remarkPlugins,
     rehypePlugins,
   },
-  integrations: [expressiveCode(), mdx(), react(), sitemap(), robotsTxt()],
+  integrations: [
+    expressiveCode({
+      defaultProps: {
+        frame: 'none',
+      },
+    }),
+    mdx(),
+    react(),
+    sitemap(),
+    robotsTxt(),
+  ],
 })

@@ -25,11 +25,11 @@ const variantClasses = {
   outline: 'bg-muted/30 text-muted-foreground border border-border hover:bg-muted/50 hover:text-foreground',
 }
 
-// 根据类型设置默认variant
+// Set the default variant based on type
 const defaultVariant = type === 'recommend' ? 'gradient' : 'default'
 const finalVariant = variant === 'default' ? defaultVariant : variant
 
-// 图标配置
+// Icon configuration
 const iconConfig = {
   tag: 'icon-[heroicons--hashtag-16-solid]',
   recommend: 'icon-[garden--sparkle-fill-16] ',

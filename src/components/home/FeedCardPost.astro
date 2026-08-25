@@ -1,0 +1,50 @@
+---
+import { Image } from 'astro:assets'
+import type { FeedItem } from '~/types'
+import { cn } from '~/lib/utils'
+import { formatDate } from '~/lib/utils'
+
+interface Props {
+  item: FeedItem
+}
+
+const { item }: Props = Astro.props
+const { title, description, date, cover } = item
+
+const meta = date ? formatDate(date, 'feed') : null
+---
+
+{
+  cover && (
+    <div class="p-2">
+      <div class="aspect-16/9 overflow-hidden rounded-xl bg-muted/40">
+        <Image
+          src={cover}
+          alt={title}
+          width={800}
+          height={450}
+          densities={[1, 2]}
+          loading="lazy"
+          class="size-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+        />
+      </div>
+    </div>
+  )
+}
+
+<div class={cn('flex gap-3 px-4 pb-4', cover ? 'pt-2' : 'pt-4')}>
+  <div class="min-w-0 grow">
+    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+      <h3 class="min-w-0 text-[0.9375rem] font-semibold tracking-tight text-pretty">{title}</h3>
+      {
+        meta && (
+          <time datetime={date!.toISOString()} class="shrink-0 text-xs whitespace-nowrap text-muted-foreground">
+            {meta}
+          </time>
+        )
+      }
+    </div>
+
+    {description && <p class="mt-1.5 text-[0.9375rem] leading-relaxed text-muted-foreground text-pretty">{description}</p>}
+  </div>
+</div>

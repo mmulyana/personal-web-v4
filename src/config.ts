@@ -1,22 +1,23 @@
 import type {
   AnalyticsConfig,
   CommentConfig,
+  ExperienceConfig,
+  FeedConfig,
   GithubConfig,
   Link,
+  PinnedProjectsConfig,
   PhotosConfig,
   PostConfig,
   ProjectConfig,
   Site,
   SkillsShowcaseConfig,
-  SocialLink,
   TagsConfig,
 } from '~/types'
 
-//--- Readme Page Config ---
 export const SITE: Site = {
   title: 'Mulyana',
-  description: 'Fullstack developer with 1 year of experience. Currently enjoying building personal software projects just for fun.',
-  website: 'https://litos.vercel.app/',
+  description: 'Frontend developer. I build Linkreator at MEA Digital Marketing, and my own small products on the side.',
+  website: 'https://mmulyana.com/',
   lang: 'en',
   base: '/',
   author: 'mmulyana',
@@ -66,38 +67,154 @@ export const FOOTER_LINKS: Link[] = [
   },
 ]
 
-// get icon https://icon-sets.iconify.design/
-export const SOCIAL_LINKS: SocialLink[] = [
-  {
-    name: 'linkedin',
-    url: 'https://www.linkedin.com/in/mmulyana/',
-    icon: 'icon-[ri--linkedin-fill]',
-  },
-  {
-    name: 'github',
-    url: 'https://github.com/mmulyana',
-    icon: 'icon-[ri--github-fill]',
-  },
-  {
-    name: 'threads',
-    url: 'https://www.threads.net/@mmulyana_',
-    icon: 'icon-[simple-icons--threads]',
-  },
-  {
-    name: 'twitter',
-    url: 'https://x.com/',
-    icon: 'icon-[ri--twitter-x-fill]',
-  },
-]
+/**
+ * Pinned projects configuration
+ * @description Shows projects with `pinned: true` in their frontmatter
+ */
+export const PINNED_PROJECTS_CONFIG: PinnedProjectsConfig = {
+  ENABLED: true,
+  LABEL: 'Pinned Projects',
+  ICON: 'icon-[ph--heart-fill]',
+}
 
 /**
- * SkillsShowcase 配置接口 / SkillsShowcase configuration type
- * @property {boolean} SKILLS_ENABLED  - 是否启用SkillsShowcase功能 / Whether to enable SkillsShowcase features
- * @property {Object} SKILLS_DATA - 技能展示数据 / Skills showcase data
- * @property {string} SKILLS_DATA.direction - 技能展示方向 / Skills showcase direction
- * @property {Object} SKILLS_DATA.skills - 技能展示数据 / Skills showcase data
- * @property {string} SKILLS_DATA.skills.icon - 技能图标 / Skills icon
- * @property {string} SKILLS_DATA.skills.name - 技能名称 / Skills name
+ * Feed configuration
+ * @description The home feed merges the `projects`, `tutorials`, `posts` collections and the experience config; every key maps to an item type
+ * @description FEATURED is the hand-picked list, written as `<type>:<id>`; the array order is the display order, and unknown ids warn at build time
+ */
+export const FEED_CONFIG: FeedConfig = {
+  ENABLED: true,
+  EMPTY_TEXT: 'Nothing here yet.',
+  // To feature something, add '<type>:<id>' below.
+  // - project:<id>    -> the folder name in src/content/projects/<id>/
+  // - tutorial:<id>   -> the folder name in src/content/tutorials/<id>/
+  // - blog:<id>       -> the folder name in src/content/posts/<id>/
+  // - experience:<id> -> the `id` field of an item in EXPERIENCE_CONFIG.ITEMS below
+  FEATURED: ['project:my-note', 'tutorial:setup-vps-with-docker'],
+  TABS: [
+    { key: 'featured', label: 'Featured', icon: 'icon-[ph--star-bold]' },
+    { key: 'project', label: 'Projects', icon: 'icon-[ph--cube-bold]' },
+    { key: 'tutorial', label: 'Tutorial', icon: 'icon-[ph--graduation-cap-bold]' },
+    { key: 'blog', label: 'Post', icon: 'icon-[ph--article-bold]' },
+    { key: 'experience', label: 'Experience', icon: 'icon-[ph--briefcase-bold]' },
+  ],
+}
+
+/**
+ * Work experience configuration
+ * @description Flows into the home feed as `experience` items, sorted by `startDate` alongside everything else
+ */
+export const EXPERIENCE_CONFIG: ExperienceConfig = {
+  ENABLED: true,
+  PRESENT_TEXT: 'Present',
+  ITEMS: [
+    {
+      id: 'mea-digital',
+      role: 'Frontend Developer',
+      company: 'MEA Digital Marketing',
+      companyUrl: '',
+      logo: '/logos/mea.png',
+      startDate: '2025-12-01',
+      description: '',
+      highlights: [
+        'Built a physical products feature for Linkreator, previously limited to digital only products. Creators/Seller can now list and sell physical goods directly on the platform.',
+        "Built new landing page builder components (CTA buttons, countdown timers, pop-ups), giving creators more building blocks to customize their pages.",
+      ],
+      skills: ['Next.js', 'TypeScript'],
+    },
+    {
+      id: 'self-employed-fullstack',
+      role: 'Fullstack Developer (Freelance)',
+      company: 'Self Employed',
+      companyUrl: '',
+      logo: '',
+      startDate: '2025-12-01',
+      description: 'Building an ERP system for a client.',
+      highlights: [
+        'Built a procurement module with purchase requests, purchase orders, an approval workflow, and warehouse stock integration.',
+      ],
+      skills: ['Next.js', 'Ruby on Rails', 'Docker'],
+    },
+    {
+      id: 'self-employed-frontend',
+      role: 'Frontend Developer (Freelance)',
+      company: 'Self Employed',
+      companyUrl: '',
+      logo: '',
+      startDate: '2024-09-01',
+      endDate: '2025-12-01',
+      description: 'Building an ERP system for a client.',
+      highlights: ['Built the frontend for a warehouse module, covering stock in/out, disposal, and stock opname features.'],
+      skills: ['Next.js'],
+    },
+    {
+      id: 'rakamin-academy',
+      role: 'Frontend Engineer (Intern)',
+      company: 'Rakamin Academy',
+      companyUrl: '',
+      logo: '/logos/rakamin.png',
+      startDate: '2024-05-01',
+      endDate: '2024-08-01',
+      highlights: [
+        'Replaced page navigation with an inline panel for candidate review, so recruiters review faster without opening a new page per candidate.',
+        'Improved bug reporting by adding photo evidence, stored in S3 and shared to Slack, making issues easier to verify.',
+      ],
+      skills: ['React.js', 'TypeScript'],
+    },
+    {
+      id: 'bitkreasi',
+      role: 'Software Engineer (Intern)',
+      company: 'Bitkreasi',
+      companyUrl: '',
+      logo: '/logos/bitkreasi.png',
+      startDate: '2024-01-01',
+      endDate: '2024-04-01',
+      highlights: [
+        'Built village profile modules for Asadesa, a village management platform, covering village identity, government structure, and institution data.',
+      ],
+      skills: ['Next.js', 'Node.js'],
+    },
+    {
+      id: 'black-wolf-tech',
+      role: 'Frontend Developer (Freelance)',
+      company: 'Black Wolf Tech Indonesia',
+      companyUrl: '',
+      logo: '',
+      startDate: '2023-08-01',
+      endDate: '2023-12-01',
+      description: 'Built features for ngajiaja.com, a web-based educational platform.',
+      highlights: [
+        'Teacher onboarding flow, covering registration and verification.',
+        'Blog functionality with CRUD post management.',
+        'Admin dashboard for monitoring student data.',
+      ],
+      skills: ['shadcn/ui', 'React Query'],
+    },
+    {
+      id: 'kecilin',
+      role: 'Frontend Developer (Intern)',
+      company: 'KECILIN',
+      companyUrl: '',
+      logo: '/logos/kecilin.png',
+      startDate: '2023-07-01',
+      endDate: '2023-10-01',
+      highlights: [
+        'Built a reusable Laravel-based starter template to speed up delivery for future projects.',
+        'Revamped the Kecilin.id landing page.',
+      ],
+      skills: ['Livewire', 'Node.js'],
+    },
+  ],
+}
+
+/**
+ * SkillsShowcase configuration type
+ * @property {boolean} SKILLS_ENABLED  - Whether to enable SkillsShowcase features
+ * @property {Object} SKILLS_DATA - Skills showcase data
+ * @property {string} SKILLS_DATA.direction - Skills showcase direction
+ * @property {Object} SKILLS_DATA.skills - Skills showcase data
+ * @property {string} SKILLS_DATA.skills.icon - Skills icon
+ * @property {string} SKILLS_DATA.skills.name - Skills name
  * get icon https://icon-sets.iconify.design/
  */
 export const SKILLSSHOWCASE_CONFIG: SkillsShowcaseConfig = {
@@ -212,11 +329,11 @@ export const SKILLSSHOWCASE_CONFIG: SkillsShowcaseConfig = {
 }
 
 /**
- * GitHub配置 / GitHub configuration
+ * GitHub configuration
  *
- * @property {boolean} ENABLED - 是否启用GitHub功能 / Whether to enable GitHub features
- * @property {string} GITHUB_USERNAME - GITHUB用户名 / GitHub username
- * @property {boolean} TOOLTIP_ENABLED - 是否开启Tooltip功能 / Whether to enable Github Tooltip features
+ * @property {boolean} ENABLED - Whether to enable GitHub features
+ * @property {string} GITHUB_USERNAME - GitHub username
+ * @property {boolean} TOOLTIP_ENABLED - Whether to enable Github Tooltip features
  */
 
 export const GITHUB_CONFIG: GithubConfig = {

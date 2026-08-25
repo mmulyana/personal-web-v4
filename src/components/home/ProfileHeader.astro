@@ -1,0 +1,63 @@
+---
+import SocialPill from './SocialPill.astro'
+import SocialPreviewCard, { type SocialPreviewVariant } from './SocialPreviewCard.astro'
+
+const socials: { url: string; icon: string; label: string; preview?: SocialPreviewVariant }[] = [
+  { url: 'https://x.com/', icon: 'icon-[ri--twitter-x-fill]', label: 'Twitter', preview: 'x' },
+  { url: 'https://github.com/mmulyana', icon: 'icon-[ri--github-fill]', label: 'GitHub', preview: 'github' },
+  { url: 'https://www.linkedin.com/in/mmulyana/', icon: 'icon-[ri--linkedin-fill]', label: 'LinkedIn', preview: 'linkedin' },
+  { url: 'https://www.threads.net/@mmulyana_', icon: 'icon-[simple-icons--threads]', label: 'Threads', preview: 'threads' },
+]
+---
+
+<section class="space-y-8">
+  <div class="flex items-center gap-3" id="profile-identity">
+    <div class="min-w-0">
+      <p class="truncate text-[0.9375rem] font-semibold tracking-tight">Mulyana</p>
+      <p class="truncate text-[0.9375rem] text-muted-foreground">Frontend Developer</p>
+    </div>
+  </div>
+
+  <div class="space-y-4 leading-relaxed text-muted-foreground text-pretty">
+    <p>
+      I'm a <strong class="font-semibold text-foreground">Frontend Engineer</strong> at Mea Digital Marketing, where I build polished web experiences
+      with a strong focus on design and the details that make a product feel right
+    </p>
+    <p>
+      Outside of work, I build <strong class="font-semibold text-foreground">personal software</strong> like
+      <a
+        href="https://mynote.mmulyana.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="font-medium text-foreground underline underline-offset-4 decoration-muted-foreground/50 transition-colors duration-200 hover:decoration-foreground"
+      >
+        My Note
+      </a>
+      and
+      <a
+        href="https://mytodo.mmulyana.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="font-medium text-foreground underline underline-offset-4 decoration-muted-foreground/50 transition-colors duration-200 hover:decoration-foreground"
+      >
+        My Todo
+      </a>, exploring ideas and turning them into things I can use.
+    </p>
+    <p>
+      While frontend is where I spend most of my time, I also enjoy <strong class="font-semibold text-foreground">learning</strong> and <strong
+        class="font-semibold text-foreground">experimenting</strong
+      > with backend and mobile development.
+    </p>
+  </div>
+
+  <div class="flex flex-wrap gap-2">
+    {
+      socials.map((item) => (
+        <div class="group/social relative inline-block">
+          <SocialPill href={item.url} icon={item.icon} label={item.label} />
+          {item.preview && <SocialPreviewCard variant={item.preview} />}
+        </div>
+      ))
+    }
+  </div>
+</section>

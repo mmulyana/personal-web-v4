@@ -29,42 +29,42 @@ const { class: className, id = 'backToTopDesktop' } = Astro.props
 
 <script>
   /**
-   * 处理滚动事件，控制回到顶部按钮的显示/隐藏
+   * Handle scroll events to control the back-to-top button's visibility
    */
   function handleScroll() {
-    // 获取所有以 backToTop 开头的按钮元素
+    // Get all button elements whose id starts with backToTop
     const backToTopButtons = document.querySelectorAll('[id^="backToTop"]')
     const footer = document.querySelector('footer')
 
     backToTopButtons.forEach((button) => {
-      // 判断是否为移动端按钮
+      // Determine whether this is the mobile button
       const isMobile = button.id === 'backToTopMobile'
-      // 基础显示条件：滚动超过 300px
+      // Base show condition: scrolled past 300px
       let shouldShow = window.scrollY > 300
 
-      // 移动端特殊处理：接近 footer 时隐藏按钮，避免重叠
+      // Mobile-specific handling: hide the button near the footer to avoid overlap
       if (isMobile && footer && shouldShow) {
         const footerTop = footer.getBoundingClientRect().top
         const windowHeight = window.innerHeight
-        // 如果 footer 进入视口底部 100px 范围内，隐藏按钮
+        // Hide the button if the footer enters within 100px of the viewport bottom
         shouldShow = footerTop > windowHeight - 100
       }
 
       const buttonElement = button as HTMLElement
       if (isMobile) {
-        // 移动端：滑动隐藏到屏幕外
+        // Mobile: slide off-screen to hide
         if (shouldShow) {
           button.classList.remove('opacity-0', 'invisible', 'translate-y-4')
           buttonElement.style.transform = 'translateY(0)'
           buttonElement.style.pointerEvents = 'auto'
         } else {
           button.classList.add('opacity-0', 'invisible')
-          // 滑动到屏幕外底部，完全避开交互区域
+          // Slide off-screen to the bottom, fully clear of the interactive area
           buttonElement.style.transform = 'translateY(120px)'
           buttonElement.style.pointerEvents = 'none'
         }
       } else {
-        // 桌面端：保持原有动画
+        // Desktop: keep the original animation
         if (shouldShow) {
           button.classList.remove('opacity-0', 'invisible', 'translate-y-4')
         } else {
@@ -75,22 +75,22 @@ const { class: className, id = 'backToTopDesktop' } = Astro.props
   }
 
   /**
-   * 初始化回到顶部功能
-   * 绑定点击事件和滚动监听
+   * Initialize the back-to-top feature
+   * Bind click event and scroll listener
    */
   function setupBackToTop() {
-    // 获取所有回到顶部按钮
+    // Get all back-to-top buttons
     const backToTopButtons = document.querySelectorAll('[id^="backToTop"]')
 
-    // 为每个按钮添加点击事件监听器
+    // Add a click event listener to each button
     backToTopButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        // 平滑滚动到页面顶部
+        // Smoothly scroll to the top of the page
         window.scrollTo({ top: 0, behavior: 'smooth' })
       })
     })
 
-    // 监听页面滚动事件
+    // Listen for page scroll events
     window.addEventListener('scroll', handleScroll)
   }
 

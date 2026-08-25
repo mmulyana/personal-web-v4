@@ -10,7 +10,7 @@ interface Props {
 
 const { headings, class: className } = Astro.props
 
-// 优化过滤逻辑，减少遍历次数
+// Optimize filtering logic to reduce iteration count
 const filteredHeadings = headings.reduce(
   (acc, heading) => {
     if (heading.depth <= 4 && heading.text.trim()) {
@@ -25,11 +25,11 @@ const filteredHeadings = headings.reduce(
   [] as (MarkdownHeading & { order: number })[]
 )
 
-// 计算相对缩进 - 基于实际存在的最小层级
+// Calculate relative indentation - based on the minimum depth actually present
 const minDepth = filteredHeadings.length > 0 ? Math.min(...filteredHeadings.map((h) => h.depth)) : 2
 const getRelativeIndentClass = (depth: number) => {
   const relativeDepth = depth - minDepth
-  const indentMap = ['ml-0', 'ml-4', 'ml-8', 'ml-12'] // 最多支持4级相对缩进
+  const indentMap = ['ml-0', 'ml-4', 'ml-8', 'ml-12'] // Supports up to 4 levels of relative indentation
   return indentMap[relativeDepth] || 'ml-12'
 }
 ---
@@ -138,7 +138,7 @@ const getRelativeIndentClass = (depth: number) => {
 
     headingElements.forEach((heading) => observer.observe(heading))
 
-    // 页面加载时检查当前可见的标题
+    // Check the currently visible heading when the page loads
     setTimeout(() => {
       const visibleHeading = Array.from(headingElements).find((heading) => {
         const rect = heading.getBoundingClientRect()
@@ -152,15 +152,15 @@ const getRelativeIndentClass = (depth: number) => {
       }
     }, 100)
 
-    // 清理函数
+    // Cleanup function
     return () => observer.disconnect()
   }
 
-  // 确保在页面内容加载完成后初始化
+  // Ensure initialization happens after page content has loaded
   document.addEventListener('astro:page-load', () => {
     const cleanup = updateActiveHeading()
 
-    // 在页面切换时清理
+    // Clean up on page transition
     document.addEventListener('astro:before-swap', () => {
       cleanup?.()
     })

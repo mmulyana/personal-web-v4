@@ -12,7 +12,7 @@ interface Props {
   className?: string
 }
 
-// 生成随机旋转角度
+// Generate random rotation angles
 const generateRotations = (count: number) => Array.from({ length: count }, () => Math.random() * 20 - 10) // -10 to +10 degrees
 
 const PolaroidStack: React.FC<Props> = ({ photos, title, description, className }) => {
@@ -22,23 +22,23 @@ const PolaroidStack: React.FC<Props> = ({ photos, title, description, className 
   const [selectedPhotoIndex, setSelectedPhotoIndex] = React.useState(0)
   const [clickedPhotoIndex, setClickedPhotoIndex] = React.useState<number | null>(null)
 
-  // 为每张照片生成固定的旋转角度
+  // Generate a fixed rotation angle for each photo
   const photoRotations = React.useMemo(() => generateRotations(photos.length), [photos.length])
 
   const handlePhotoClick = (index: number) => {
-    setClickedPhotoIndex(index) // 立即标记为点击状态
+    setClickedPhotoIndex(index) // Immediately mark as clicked
     setSelectedPhotoIndex(index)
     setTimeout(() => {
       setIsModalOpen(true)
-    }, 50) // 等待模态框动画结束
+    }, 50) // Wait for the modal animation to finish
   }
 
   const handleModalClose = () => {
     setIsModalOpen(false)
-    // 模态框关闭后重置点击状态
+    // Reset the clicked state after the modal closes
     setTimeout(() => {
       setClickedPhotoIndex(null)
-    }, 200) // 等待模态框动画结束
+    }, 200) // Wait for the modal animation to finish
   }
 
   return (

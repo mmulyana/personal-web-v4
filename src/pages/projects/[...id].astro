@@ -1,0 +1,120 @@
+---
+import { render } from 'astro:content'
+import Layout from '~/layouts/Layout.astro'
+import Prose from '~/components/posts/base/Prose.astro'
+import SectionDivider from '~/components/base/SectionDivider.astro'
+import { getAllProjects } from '~/lib/data'
+import { SITE } from '~/config'
+
+export async function getStaticPaths() {
+  const projects = await getAllProjects()
+  return projects
+    .filter((project) => project.data.hasDetail)
+    .map((project) => ({
+      params: { id: project.id },
+      props: { project },
+    }))
+}
+
+const { project } = Astro.props
+const { data: frontmatter } = project
+const { Content } = await render(project)
+
+const githubLabel = (href: string) => {
+  if (!frontmatter.githubUrls || frontmatter.githubUrls.length <= 1) return 'GitHub'
+  try {
+    return new URL(href).pathname.split('/').filter(Boolean).pop() ?? 'GitHub'
+  } catch {
+    return 'GitHub'
+  }
+}
+---
+
+<Layout title={frontmatter.name} description={frontmatter.description} image={SITE.ogImage}>
+  <div class="relative z-[1] px-6 py-8 pb-10 sm:px-8">
+    <div class="global-layout-width mx-auto">
+      <a
+        href="/"
+        class="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
+      >
+        <span class="icon-[ph--arrow-left] size-4 transition-transform duration-200 group-hover:-translate-x-0.5"></span>
+        Back
+      </a>
+
+      <header class="mt-6 space-y-3">
+        <h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">{frontmatter.name}</h1>
+        <p class="text-muted-foreground">{frontmatter.description}</p>
+        <div class="flex flex-wrap items-center gap-4 pt-1 text-sm text-muted-foreground">
+          {
+            frontmatter.website && (
+              <a
+                href={frontmatter.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-1.5 hover:text-foreground"
+              >
+                <span class="icon-[mdi--web] size-4" />
+                Website
+              </a>
+            )
+          }
+          {
+            frontmatter.githubUrls && frontmatter.githubUrls.length === 1 && (
+              <a
+                href={frontmatter.githubUrls[0]}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-1.5 hover:text-foreground"
+              >
+                <span class="icon-[mdi--github] size-4" />
+                GitHub
+              </a>
+            )
+          }
+          {
+            frontmatter.githubUrls && frontmatter.githubUrls.length > 1 && (
+              <details class="group/github relative">
+                <summary
+                  class="flex cursor-pointer list-none items-center gap-1.5 select-none hover:text-foreground [&::-webkit-details-marker]:hidden"
+                >
+                  <span class="icon-[mdi--github] size-4" />
+                  GitHub
+                  <span class="icon-[ph--caret-down-bold] size-3 transition-transform duration-200 group-open/github:rotate-180" />
+                </summary>
+                <div class="absolute top-full left-0 z-20 mt-1.5 min-w-40 overflow-hidden rounded-xl border border-border bg-background py-1 text-sm shadow-lg">
+                  {frontmatter.githubUrls.map((href) => (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex items-center gap-1.5 px-3 py-2 text-muted-foreground transition-colors duration-150 hover:bg-muted/40 hover:text-foreground"
+                    >
+                      <span class="icon-[mdi--github] size-4" />
+                      {githubLabel(href)}
+                    </a>
+                  ))}
+                </div>
+              </details>
+            )
+          }
+        </div>
+
+        {
+          frontmatter.stack && frontmatter.stack.length > 0 && (
+            <ul class="flex flex-wrap gap-1.5 pt-1">
+              {frontmatter.stack.map((tech) => (
+                <li class="rounded-full bg-muted/40 px-2 py-0.5 text-xs font-medium text-muted-foreground">{tech}</li>
+              ))}
+            </ul>
+          )
+        }
+      </header>
+
+      <SectionDivider className="my-8" />
+
+      <Prose>
+        <Content />
+      </Prose>
+    </div>
+  </div>
+</Layout>

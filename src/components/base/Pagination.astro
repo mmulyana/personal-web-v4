@@ -11,7 +11,7 @@ interface Props {
 
 const { page, baseUrl, class: className = '' } = Astro.props
 
-// 处理大量页码的显示逻辑
+// Handle display logic for a large number of pages
 const getVisiblePages = (current: number, total: number) => {
   if (total <= 7) return [...Array(total)].map((_, i) => i + 1)
 

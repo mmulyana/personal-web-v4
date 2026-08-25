@@ -1,24 +1,14 @@
 ---
-import { HEADER_LINKS } from '~/config'
 import ThemeToggle from '~/components/theme/ThemeToggle'
-import SectionDivider from '~/components/base/SectionDivider.astro'
-import HeaderLink from '~/components/base/HeaderLink.astro'
 ---
 
-<header>
-  <div class="mx-auto global-layout-width flex justify-between px-6 sm:px-8 py-4 lg:px-8">
-    <div class="flex gap-0 sm:gap-6 items-center flex-shrink-0">
-      <div class="flex gap-1">
-        {
-          HEADER_LINKS.map((link) => (
-            <HeaderLink href={link.url} background>
-              {link.name}
-            </HeaderLink>
-          ))
-        }
-      </div>
+<header class="sticky top-0 z-10 bg-gradient-to-b from-background via-background/80 to-background/0">
+  <div class="mx-auto flex max-w-2xl items-center justify-between px-6 sm:px-8 py-4 lg:px-8">
+    <div class="flex min-w-0 items-baseline gap-1.5 opacity-0 -translate-y-1 transition-all duration-300" data-header-identity>
+      <p class="truncate text-sm font-semibold tracking-tight">Mulyana</p>
+      <p class="hidden shrink-0 text-sm text-muted-foreground sm:block">· Frontend Developer</p>
     </div>
-    <div class="flex gap-2 items-center" transition:persist="header-theme-toggle">
+    <div class="flex gap-2 items-center shrink-0" transition:persist="header-theme-toggle">
       <a
         href="/atom.xml"
         target="_blank"
@@ -31,12 +21,29 @@ import HeaderLink from '~/components/base/HeaderLink.astro'
       <ThemeToggle client:load />
     </div>
   </div>
-  <div class="relative global-layout-width mx-auto pointer-events-none">
-    <div aria-hidden="true" class="absolute inset-x-0 -top-14 bottom-0 mx-auto global-layout-width">
-      <div class="to-(--color-border)/50 absolute bottom-0 left-0 top-0 w-px bg-gradient-to-b from-transparent to-75%"></div>
-      <div class="to-(--color-border)/50 absolute bottom-0 right-0 top-0 w-px bg-gradient-to-b from-transparent to-75%"></div>
-    </div>
-  </div>
 </header>
 
-<SectionDivider className="border-t-border dark:border-t-border/50" />
+<script>
+  const setupHeaderIdentity = () => {
+    const identity = document.querySelector<HTMLElement>('[data-header-identity]')
+    if (!identity) return
+
+    const target = document.getElementById('profile-identity')
+    if (!target) {
+      identity.classList.remove('opacity-0', '-translate-y-1')
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        identity.classList.toggle('opacity-0', entry.isIntersecting)
+        identity.classList.toggle('-translate-y-1', entry.isIntersecting)
+      },
+      { rootMargin: '-72px 0px 0px 0px' }
+    )
+    observer.observe(target)
+  }
+
+  setupHeaderIdentity()
+  document.addEventListener('astro:page-load', setupHeaderIdentity)
+</script>

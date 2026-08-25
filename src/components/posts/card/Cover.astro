@@ -15,7 +15,7 @@ const recommendText = POSTS_CONFIG.recommendText
     <div class="flex flex-wrap items-center gap-3 text-sm text-muted-foreground/80">
       <time class="flex items-center gap-1.5">
         <span class="icon-[ph--calendar-blank] size-4"></span>
-        {formatDate(post.data.pubDate, 'chinese')}
+        {formatDate(post.data.pubDate)}
       </time>
       {
         post.data.updatedDate && (
@@ -23,7 +23,7 @@ const recommendText = POSTS_CONFIG.recommendText
             <span class="text-border">|</span>
             <time class="flex items-center gap-1.5">
               <span class="icon-[ph--clock-clockwise] size-4" />
-              {formatDate(post.data.updatedDate, 'chinese')}
+              {formatDate(post.data.updatedDate)}
             </time>
           </>
         )

@@ -1,0 +1,280 @@
+---
+title: 'Cara Saya Deploy Aplikasi ke VPS dengan Docker'
+description: 'Panduan setup VPS dengan menggunakan Docker'
+pubDate: 2026-07-25
+author: 'Mulyana'
+tags: ['docker', 'vps', 'caddy', 'devops']
+---
+
+## Overview
+
+Panduan ini mencakup setup VPS yang bisa dipakai untuk hosting banyak aplikasi sekaligus. Arsitekturnya dirancang **scalable** agar aplikasi berdiri sendiri, dan Caddy berperan sebagai reverse proxy terpusat yang menangani semua traffic masuk.
+
+Setup ini sebenarnya bukan murni dari nol yang saya rancang sendiri tapi berdasar pengalaman waktu kerja ngefreelance, saya belajar pola ini dari **senior engineer** saya di tim yang sudah dulu membuat infrastrukturnya. Lalu saya mencoba pahami cara kerjanya, tiru alurnya, lalu tulis ulang di sini sebagai catatan pribadi biar bisa dipakai lagi ke depannya.
+
+### Arsitektur
+
+```
+              ┌───────────────┐
+              │     Caddy     │← satu2nya yang pegang port 80/443
+              │ (port 80/443) │
+              └──────┬────────┘
+                     │
+        ┌────────────┼────────────┐
+        │            │            │
+  ┌─────▼────┐ ┌─────▼────┐ ┌─────▼────┐
+  │   app-1  │ │   app-2  │ │   app-3  │
+  │          │ │  (nanti) │ │  (nanti) │
+  └──────────┘ └──────────┘ └──────────┘
+```
+
+Semua container terhubung lewat **shared Docker network**, sehingga Caddy bisa reverse proxy ke aplikasi.
+
+### Kenapa Caddy Dipisah dari Aplikasi?
+
+Kalau Caddy menempel di tiap aplikasi, setiap aplikasi akan rebutan port `80`/`443` karena hanya boleh ada satu proses yang listen di port tersebut dalam satu VPS.
+
+Dengan Caddy terpisah sebagai **gerbang utama**:
+
+- hanya Caddy yang expose port 80/443 ke publik
+- restart/update satu aplikasi tidak mengganggu aplikasi lain
+- buat nambah aplikasi tinggal buat folder + compose baru
+- Caddy yang ngurus Let's Encrypt sendiri per domain/subdomain
+
+### Struktur Folder di VPS
+
+```
+~/
+├── caddy/
+│   ├── docker-compose.yml
+│   └── Caddyfile
+│
+├── app-1/
+│   ├── docker-compose.yml
+│   └── .env
+│
+└── app-2/ (nanti, kalau ada aplikasi baru)
+    ├── docker-compose.yml
+    └── .env
+```
+
+---
+
+## Persiapan Awal VPS
+
+### Install Docker
+
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo systemctl enable docker
+sudo systemctl start docker
+```
+
+### Izinkan User Menjalankan Docker Tanpa `sudo`
+
+```bash
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+Verifikasi:
+
+```bash
+docker ps
+```
+
+### Buat Shared Network
+
+Network ini jadi jembatan yang menghubungkan Caddy dengan semua aplikasi.
+
+```bash
+docker network create proxy_net
+```
+
+---
+
+## Setup Caddy (Reverse Proxy Terpusat)
+
+```bash
+mkdir -p ~/caddy
+cd ~/caddy
+```
+
+### `docker-compose.yml`
+
+```yaml
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - proxy_net
+    restart: unless-stopped
+
+networks:
+  proxy_net:
+    external: true
+
+volumes:
+  caddy_data:
+  caddy_config:
+```
+
+### `Caddyfile` (sementara, sebelum punya domain)
+
+Kalau belum punya domain, bisa gunain IP langsung. tapi caddy gak akan generate SSL karena Let's Encrypt butuh domain valid.
+
+```
+:80 {
+    handle /api/* {
+        reverse_proxy app-be:3000
+    }
+    handle {
+        reverse_proxy app-fe:80
+    }
+}
+```
+
+### `Caddyfile` (setelah punya domain)
+
+Ganti dengan nama subdomain. Caddy otomatis generate SSL dari Let's Encrypt.
+
+```
+myapp.domainmu.com {
+    handle /api/* {
+        reverse_proxy app-be:3000
+    }
+    handle {
+        reverse_proxy app-fe:80
+    }
+}
+```
+
+Untuk menambah aplikasi baru, cukup tambahkan blok baru:
+
+```
+app2.domainmu.com {
+    reverse_proxy app2:PORT
+}
+```
+
+### Jalankan Caddy
+
+```bash
+docker compose up -d
+docker compose ps
+```
+
+### Reload Caddy Setelah Update Caddyfile
+
+```bash
+docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
+```
+
+Tidak perlu restart container Caddy bisa reload konfigurasi secara live tanpa downtime.
+
+---
+
+## Setup Aplikasi
+
+Setiap aplikasi punya folder dan `docker-compose.yml` sendiri. Berikut contoh untuk aplikasi dengan stack frontend (React/Vue) + backend (Go/Node) + database (PostgreSQL).
+
+```bash
+mkdir -p ~/my-app
+cd ~/my-app
+```
+
+### `docker-compose.yml`
+
+```yaml
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - proxy_net
+
+  app-be:
+    image: ${DOCKER_USERNAME}/my-app-be:${BE_TAG:-latest}
+    container_name: app-be
+    environment:
+      DATABASE_URL: postgres://${DB_USER:-postgres}:${DB_PASSWORD}@postgres:5432/${DB_NAME}?sslmode=disable
+      PORT: ${BE_PORT:-3000}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - proxy_net
+
+  app-fe:
+    image: ${DOCKER_USERNAME}/my-app-fe:${FE_TAG:-latest}
+    container_name: app-fe
+    restart: unless-stopped
+    networks:
+      - proxy_net
+
+networks:
+  proxy_net:
+    external: true
+
+volumes:
+  postgres_data:
+```
+
+**Catatan penting:**
+
+- Tidak ada service `caddy` di sini kan sudah dipisah ke `~/caddy/`
+- Semua service yang perlu diakses Caddy wajib join `networks: - proxy_net`
+- `container_name` di set eksplisit agar bisa dipakai sebagai hostname di Caddyfile
+
+
+### Jalankan Aplikasi
+
+```bash
+docker compose up -d
+docker compose ps
+docker compose logs -f
+```
+
+## Menambah Aplikasi Baru
+
+Karena arsitekturnya sudah scalable, buat nambah aplikasi baru cukup:
+
+1. Buat folder baru `~/app-2/` dengan `docker-compose.yml` trus pastiin semua service yang perlu publik join `networks: - proxy_net` dengan `external: true`
+2. Tambahkan blok baru di `~/caddy/Caddyfile`:
+
+```
+app2.domainmu.com {
+    reverse_proxy app2-service:PORT
+}
+```
+
+3. Reload Caddy:
+
+```bash
+cd ~/caddy
+docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
+```
+
+Tidak perlu restart Caddy atau aplikasi lain yang sudah berjalan.

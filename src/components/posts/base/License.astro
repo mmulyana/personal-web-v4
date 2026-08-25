@@ -11,12 +11,12 @@ interface Props {
 
 const { license, title, author, url, class: className } = Astro.props
 
-// 如果没有 license，不显示组件
+// Don't render the component if no license is provided
 if (!license) {
   return null
 }
 
-// 许可证配置映射
+// License configuration map
 const licenseConfig: Record<string, { name: string; url: string; icon: string; description: string }> = {
   'CC-BY-4.0': {
     name: 'CC BY 4.0',

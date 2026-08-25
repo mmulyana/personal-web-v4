@@ -13,7 +13,7 @@ let lqip: string | null = null
 
 lqip = await generateLQIPFromPath(src)
 
-// 构建样式
+// Build the style string
 const lqipStyle = lqip ? `--lqip:${lqip}` : ''
 const finalStyle = style ? `${style};${lqipStyle}` : lqipStyle
 ---
