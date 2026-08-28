@@ -7,11 +7,9 @@ interface Props {
 }
 
 const { tabs }: Props = Astro.props
-
-// Rendered as a segmented control, deliberately distinct from the standalone SocialPill chips above
 ---
 
-<div class="no-scrollbar -mx-1 overflow-x-auto px-1 py-1">
+<div class="no-scrollbar -mx-1 min-w-0 overflow-x-auto px-1 py-1">
   <div
     class="inline-flex w-max gap-0.5 rounded-xl border border-border/60 bg-muted/40 p-1"
     role="tablist"
@@ -42,7 +40,6 @@ const { tabs }: Props = Astro.props
 </div>
 
 <style is:global>
-  /* Under Featured, follow the order in FEED_CONFIG.FEATURED */
   [data-feed-list][data-feed-active='featured'] [data-feed-item] {
     order: var(--feed-order, 0);
   }
@@ -78,7 +75,6 @@ const { tabs }: Props = Astro.props
       tab.addEventListener('click', () => apply(tab.dataset.feedTab ?? 'featured'))
     }
 
-    // The default tab is no longer "all", so the initial state needs filtering too
     apply(tabs.find((tab) => tab.getAttribute('aria-selected') === 'true')?.dataset.feedTab ?? 'featured')
   }
 

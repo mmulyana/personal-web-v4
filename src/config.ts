@@ -11,6 +11,7 @@ import type {
   ProjectConfig,
   Site,
   SkillsShowcaseConfig,
+  SocialPreviewConfig,
   TagsConfig,
 } from '~/types'
 
@@ -409,6 +410,49 @@ export const PHOTOS_CONFIG: PhotosConfig = {
   title: 'Photos',
   description: 'Here I will record some photos taken in daily life.',
   introduce: 'Here I will record some photos taken in daily life.',
+}
+
+/**
+ * Social preview cards configuration
+ * @description Hover preview content shown under each social pill on the profile header. Edit here to adjust.
+ */
+export const SOCIAL_PREVIEW_CONFIG: SocialPreviewConfig = {
+  x: {
+    enabled: false, // no preview image yet — hidden for now, along with the pill button
+    avatar: '/avatar.svg',
+    name: 'Mulyana',
+    verified: true,
+    handle: '@mmulyana',
+    bio: 'Frontend Engineer building polished web products. Side projects: My Note & My Todo.',
+    following: 128,
+    followers: 342,
+  },
+  linkedin: {
+    enabled: true,
+    avatar: '/img/linkedin.jpg',
+    name: 'Mulyana',
+    headline: 'Frontend Developer at MEA digital marketing | React.js, Next.js',
+    location: 'Indonesia',
+    connections: '495',
+  },
+  github: {
+    enabled: true,
+    avatar: '/img/github.jpg',
+    name: 'Mulyana',
+    username: 'mmulyana',
+    bio: 'Software Engineer Wannabe🚀',
+    repositories: 53,
+    followers: 40,
+    following: 17,
+  },
+  threads: {
+    enabled: true,
+    avatar: '/img/threads.jpg',
+    name: 'Mulyana',
+    handle: '@mmulyana_',
+    bio: 'return <></>',
+    followers: 55,
+  },
 }
 
 export const ANALYTICS_CONFIG: AnalyticsConfig = {

@@ -25,15 +25,15 @@ const githubLabel = (href: string) => {
 ---
 
 <div class="relative px-4 py-4">
-  <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
-    {
-      thumbnail && (
-        <div class="absolute inset-y-0 right-0 w-1/2">
+  {
+    thumbnail && (
+      <div class="pointer-events-none -mx-4 -mt-4 mb-3 aspect-16/9 overflow-hidden rounded-t-2xl bg-muted/40 sm:absolute sm:inset-0 sm:m-0 sm:aspect-auto sm:overflow-hidden sm:rounded-2xl sm:bg-transparent">
+        <div class="size-full sm:absolute sm:inset-y-0 sm:right-0 sm:w-1/2">
           <Image src={thumbnail} alt="" width={480} height={480} loading="lazy" class="size-full object-cover" />
         </div>
-      )
-    }
-  </div>
+      </div>
+    )
+  }
 
   <div class="relative flex items-start justify-between gap-3">
     <div class="size-12 shrink-0 overflow-hidden rounded-2xl border border-border/60 bg-muted/40">

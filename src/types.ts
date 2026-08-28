@@ -364,3 +364,60 @@ export interface PinnedProjectsConfig {
   LABEL: string
   ICON: string
 }
+
+/**
+ * Social preview card variants
+ * @description Which platform-styled hover preview to render under a social pill
+ */
+export type SocialPreviewVariant = 'x' | 'linkedin' | 'github' | 'threads'
+
+export interface SocialPreviewXData {
+  enabled: boolean
+  avatar: string
+  name: string
+  verified: boolean
+  handle: string
+  bio: string
+  following: number
+  followers: number
+}
+
+export interface SocialPreviewLinkedinData {
+  enabled: boolean
+  avatar: string
+  name: string
+  headline: string
+  location: string
+  connections: string
+}
+
+export interface SocialPreviewGithubData {
+  enabled: boolean
+  avatar: string
+  name: string
+  username: string
+  bio: string
+  repositories: number
+  followers: number
+  following: number
+}
+
+export interface SocialPreviewThreadsData {
+  enabled: boolean
+  avatar: string
+  name: string
+  handle: string
+  bio: string
+  followers: number
+}
+
+/**
+ * Social preview cards configuration
+ * @description Hover preview content shown under each social pill on the profile header
+ */
+export interface SocialPreviewConfig {
+  x: SocialPreviewXData
+  linkedin: SocialPreviewLinkedinData
+  github: SocialPreviewGithubData
+  threads: SocialPreviewThreadsData
+}

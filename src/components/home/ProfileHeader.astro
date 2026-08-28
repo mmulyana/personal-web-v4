@@ -1,13 +1,16 @@
 ---
-import SocialPill from './SocialPill.astro'
-import SocialPreviewCard, { type SocialPreviewVariant } from './SocialPreviewCard.astro'
+import type { SocialPreviewVariant } from '~/types'
+import { SOCIAL_PREVIEW_CONFIG } from '~/config'
+import SocialLinks from './SocialLinks'
 
-const socials: { url: string; icon: string; label: string; preview?: SocialPreviewVariant }[] = [
+const ALL_SOCIALS: { url: string; icon: string; label: string; preview: SocialPreviewVariant }[] = [
   { url: 'https://x.com/', icon: 'icon-[ri--twitter-x-fill]', label: 'Twitter', preview: 'x' },
   { url: 'https://github.com/mmulyana', icon: 'icon-[ri--github-fill]', label: 'GitHub', preview: 'github' },
   { url: 'https://www.linkedin.com/in/mmulyana/', icon: 'icon-[ri--linkedin-fill]', label: 'LinkedIn', preview: 'linkedin' },
   { url: 'https://www.threads.net/@mmulyana_', icon: 'icon-[simple-icons--threads]', label: 'Threads', preview: 'threads' },
 ]
+
+const socials = ALL_SOCIALS.filter((item) => SOCIAL_PREVIEW_CONFIG[item.preview].enabled)
 ---
 
 <section class="space-y-8">
@@ -50,14 +53,5 @@ const socials: { url: string; icon: string; label: string; preview?: SocialPrevi
     </p>
   </div>
 
-  <div class="flex flex-wrap gap-2">
-    {
-      socials.map((item) => (
-        <div class="group/social relative inline-block">
-          <SocialPill href={item.url} icon={item.icon} label={item.label} />
-          {item.preview && <SocialPreviewCard variant={item.preview} />}
-        </div>
-      ))
-    }
-  </div>
+  <SocialLinks socials={socials} previewConfig={SOCIAL_PREVIEW_CONFIG} client:load />
 </section>

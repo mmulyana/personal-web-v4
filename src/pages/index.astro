@@ -17,7 +17,7 @@ const initialTab = FEED_CONFIG.TABS[0]?.key ?? 'featured'
     {
       feed.length > 0 && (
         <section class="space-y-4">
-          <div class="flex justify-center">
+          <div class="flex min-w-0 justify-center">
             <FeedTabs tabs={FEED_CONFIG.TABS} />
           </div>
 
