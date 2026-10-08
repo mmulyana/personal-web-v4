@@ -70,7 +70,7 @@ export async function getPinnedProjects(): Promise<CollectionEntry<'projects'>[]
 }
 
 // Parse YYYY-MM-DD in local time so a timezone shift can't push it into the previous month
-function parseLocalDate(value: string): Date {
+export function parseLocalDate(value: string): Date {
   return new Date(value.includes('T') ? value : `${value}T00:00:00`)
 }
 

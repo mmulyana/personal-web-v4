@@ -31,10 +31,12 @@ const SocialLinks: React.FC<Props> = ({ socials, previewConfig }) => {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [hoveredIndex])
 
-  const active = hoveredIndex === null ? null : socials[hoveredIndex]
+  const hasCursor = cursor.x !== 0 || cursor.y !== 0
+  const active = hoveredIndex === null || !hasCursor ? null : socials[hoveredIndex]
 
+  // note: `contents` keeps these pills in the same row as the CV link
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="contents">
       {socials.map((item, index) => (
         <a
           key={item.url}
@@ -42,7 +44,10 @@ const SocialLinks: React.FC<Props> = ({ socials, previewConfig }) => {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={item.label}
-          onMouseEnter={() => setHoveredIndex(index)}
+          onMouseEnter={(event) => {
+            setCursor({ x: event.clientX, y: event.clientY })
+            setHoveredIndex(index)
+          }}
           onMouseLeave={() => setHoveredIndex(null)}
           className="group inline-flex items-center gap-2 rounded-full border border-border bg-background px-3.5 py-2 text-sm font-medium text-muted-foreground no-underline transition-colors duration-200 hover:border-foreground/10 hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >

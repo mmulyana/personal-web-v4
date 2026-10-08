@@ -67,21 +67,7 @@ const placeholderLetter = logo ? null : (subtitle ?? title).trim().charAt(0).toU
 </div>
 
 <script>
-  // Computed in the browser so an ongoing role's duration ("9 mos" -> "10 mos" ...) stays
-  // correct as time passes, without needing a rebuild.
-  function formatDuration(startIso: string, endIso: string): string {
-    const start = new Date(startIso)
-    const end = endIso ? new Date(endIso) : new Date()
-    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1
-    if (months <= 0) return ''
-
-    const years = Math.floor(months / 12)
-    const remMonths = months % 12
-    const parts: string[] = []
-    if (years > 0) parts.push(`${years} ${years === 1 ? 'yr' : 'yrs'}`)
-    if (remMonths > 0 || years === 0) parts.push(`${remMonths} ${remMonths === 1 ? 'mo' : 'mos'}`)
-    return parts.join(' ')
-  }
+  import { formatDuration } from '~/lib/duration'
 
   function renderExperienceDurations() {
     for (const el of document.querySelectorAll<HTMLElement>('[data-experience-duration]')) {

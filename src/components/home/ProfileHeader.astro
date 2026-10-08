@@ -53,5 +53,22 @@ const socials = ALL_SOCIALS.filter((item) => SOCIAL_PREVIEW_CONFIG[item.preview]
     </p>
   </div>
 
-  <SocialLinks socials={socials} previewConfig={SOCIAL_PREVIEW_CONFIG} client:load />
+  <div class="flex flex-wrap gap-2">
+    <a
+      href="/cv"
+      class="group relative inline-flex overflow-hidden rounded-full p-[2px] no-underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    >
+      <span
+        aria-hidden="true"
+        class="absolute inset-[-200%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(hsl(var(--border))_0%,hsl(var(--border))_70%,#3b82f6_100%)] motion-reduce:animate-none"
+      ></span>
+      <span
+        class="relative inline-flex items-center gap-2 rounded-full bg-background px-[13px] py-[7px] text-sm font-medium text-foreground transition-colors duration-200 group-hover:bg-background/90"
+      >
+        <span class="icon-[ph--file-text-bold] size-4 shrink-0"></span>
+        CV
+      </span>
+    </a>
+    <SocialLinks socials={socials} previewConfig={SOCIAL_PREVIEW_CONFIG} client:load />
+  </div>
 </section>

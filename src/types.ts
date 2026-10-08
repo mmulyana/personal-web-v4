@@ -343,6 +343,8 @@ export interface ExperienceItem {
   id: string
   role: string
   company: string
+  companyDescription?: string
+  workMode?: 'Remote' | 'Hybrid' | 'Onsite'
   companyUrl?: string
   // A path under public/
   logo?: string
@@ -356,7 +358,29 @@ export interface ExperienceItem {
 export interface ExperienceConfig {
   ENABLED: boolean
   PRESENT_TEXT: string
+  // note: newest first, same-company items are grouped on the CV
   ITEMS: ExperienceItem[]
+}
+
+export interface CvConfig {
+  title: string
+  description: string
+  name: string
+  location: string
+  email: string
+  links: string[]
+  summary: string
+  // note: ids from src/content/projects/
+  projects: string[]
+  skills: { label: string; items: string[] }[]
+  education: {
+    school: string
+    location: string
+    major: string
+    gpa?: string
+    startYear: number
+    endYear: number
+  }[]
 }
 
 export interface PinnedProjectsConfig {

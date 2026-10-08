@@ -1,0 +1,189 @@
+---
+import { CV_CONFIG } from '~/config'
+import Layout from '~/layouts/Layout.astro'
+import { getCvData } from '~/lib/cv'
+
+const { title, description } = CV_CONFIG
+const { name, location, email, links, summary, companies, projects, skills, education } = await getCvData()
+
+const linkClass = 'underline underline-offset-4 decoration-muted-foreground/50 transition-colors hover:decoration-foreground'
+---
+
+<Layout {title} {description}>
+  <article class="cv mx-auto max-w-2xl px-6 sm:px-8 py-8 pb-16 text-sm leading-snug">
+    <a
+      href="/"
+      class="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
+    >
+      <span class="icon-[ph--arrow-left] size-4 transition-transform duration-200 group-hover:-translate-x-0.5"></span>
+      Back
+    </a>
+
+    <header class="mt-6">
+      <div class="flex items-center justify-between gap-4">
+        <h1 class="text-2xl font-semibold tracking-tight">{name}</h1>
+        <a
+          href="/cv.pdf"
+          target="_blank"
+          class="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <span class="icon-[ph--file-pdf-bold] size-4"></span>
+          Download PDF
+        </a>
+      </div>
+      <p class="mt-1 flex flex-wrap gap-x-2 text-muted-foreground">
+        <span>{location}</span>
+        <span aria-hidden="true">·</span>
+        <a href={`mailto:${email}`} class={linkClass}>{email}</a>
+        {
+          links.map((url) => (
+            <>
+              <span aria-hidden="true">·</span>
+              <a href={url} target="_blank" rel="noopener noreferrer" class={linkClass}>
+                {url.replace(/^https?:\/\/(www\.)?/, '')}
+              </a>
+            </>
+          ))
+        }
+      </p>
+    </header>
+
+    <section class="mt-8">
+      <h2 class="cv-heading">Summary</h2>
+      <p class="text-muted-foreground text-pretty">{summary}</p>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="cv-heading">Professional Experience</h2>
+      <div class="space-y-5">
+        {
+          companies.map((company) => (
+            <div>
+              <div class="flex flex-wrap items-baseline justify-between gap-x-4">
+                <p class="min-w-0">
+                  <span class="font-semibold">
+                    {company.companyUrl ? (
+                      <a href={company.companyUrl} target="_blank" rel="noopener noreferrer" class={linkClass}>
+                        {company.company}
+                      </a>
+                    ) : (
+                      company.company
+                    )}
+                  </span>
+                  {company.companyDescription && <span class="italic text-muted-foreground"> / {company.companyDescription}</span>}
+                </p>
+                {company.workMode && <span class="shrink-0 text-xs font-medium text-muted-foreground">{company.workMode}</span>}
+              </div>
+
+              {company.roles.map((role) => (
+                <div class="mt-2">
+                  <div class="flex flex-wrap items-baseline justify-between gap-x-4">
+                    <h3 class="font-medium">{role.role}</h3>
+                    <span class="shrink-0 text-xs whitespace-nowrap text-muted-foreground">
+                      {role.dateLabel}
+                      <span data-experience-duration data-start={role.start.toISOString()} data-end={role.end?.toISOString() ?? ''} />
+                    </span>
+                  </div>
+                  {role.description && <p class="mt-1 text-muted-foreground text-pretty">{role.description}</p>}
+                  {role.highlights && role.highlights.length > 0 && (
+                    <ul class="mt-1 space-y-0.5 pl-4 text-muted-foreground">
+                      {role.highlights.map((highlight) => (
+                        <li class="list-disc text-pretty marker:text-muted-foreground/50">{highlight}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {role.skills && role.skills.length > 0 && (
+                    <p class="mt-1 text-xs text-muted-foreground">Techstack: {role.skills.join(', ')}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="cv-heading">Selected Projects</h2>
+      <ul class="space-y-1 pl-4 text-muted-foreground">
+        {
+          projects.map((project) => (
+            <li class="list-disc text-pretty marker:text-muted-foreground/50">
+              <span class="font-semibold text-foreground">{project.name}</span>
+              {project.website && (
+                <>
+                  {' '}
+                  <a href={project.website} target="_blank" rel="noopener noreferrer" class={linkClass}>
+                    Live Demo
+                  </a>
+                </>
+              )}
+              : {project.description}
+              {project.stack && project.stack.length > 0 && <>, built with {project.stack.join(', ')}</>}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="cv-heading">Skills</h2>
+      <ul class="space-y-1 pl-4 text-muted-foreground">
+        {
+          skills.map((group) => (
+            <li class="list-disc text-pretty marker:text-muted-foreground/50">
+              <span class="font-semibold text-foreground">{group.label}:</span> {group.items.join(', ')}.
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="cv-heading">Education</h2>
+      {
+        education.map((item) => (
+          <div>
+            <div class="flex flex-wrap items-baseline justify-between gap-x-4">
+              <p class="font-semibold">
+                {item.school} <span class="font-normal text-muted-foreground">· {item.location}</span>
+              </p>
+              {item.gpa && <span class="shrink-0 text-xs text-muted-foreground">GPA {item.gpa}</span>}
+            </div>
+            <div class="flex flex-wrap items-baseline justify-between gap-x-4 text-muted-foreground">
+              <p>{item.major}</p>
+              <span class="shrink-0 text-xs">
+                {item.startYear} – {item.endYear}
+              </span>
+            </div>
+          </div>
+        ))
+      }
+    </section>
+  </article>
+</Layout>
+
+<style is:global>
+  .cv .cv-heading {
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid hsl(var(--border));
+    padding-bottom: 0.25rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+</style>
+
+<script>
+  import { formatDuration } from '~/lib/duration'
+
+  function renderDurations() {
+    for (const el of document.querySelectorAll<HTMLElement>('[data-experience-duration]')) {
+      const duration = formatDuration(el.dataset.start ?? '', el.dataset.end ?? '')
+      el.textContent = duration ? ` (${duration})` : ''
+    }
+  }
+
+  renderDurations()
+  document.addEventListener('astro:page-load', renderDurations)
+</script>
