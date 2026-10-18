@@ -1,0 +1,15 @@
+---
+import Head from '~/components/base/Head.astro'
+import '~/styles/global.css'
+import CarRace from '~/components/race/CarRace'
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head title="Car Race Picker" description="Random name picker, visualized as a car race." />
+  </head>
+  <body class="m-0 overflow-hidden bg-[#0b2a47]">
+    <CarRace client:load />
+  </body>
+</html>
