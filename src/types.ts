@@ -280,7 +280,7 @@ export interface CommentConfig {
 export type FeedType = 'project' | 'tutorial' | 'blog' | 'experience'
 
 export type FeedTab = {
-  key: 'featured' | FeedType
+  key: 'featured' | 'writing' | FeedType
   label: string
   icon: string
 }
