@@ -1,0 +1,88 @@
+---
+title: 'Belajar Go: Bikin HTTP Server Sederhana'
+description: 'Catatan belajar Go, dari setup project sampai bikin HTTP server dengan JSON response'
+pubDate: 2026-10-18
+author: 'Mulyana'
+tags: ['go', 'backend']
+---
+
+## Overview
+
+Catatan pribadi waktu belajar Go. Tujuannya biar kalau lupa, tinggal baca lagi. Di sini kita bikin HTTP server kecil yang mengembalikan JSON, tanpa library tambahan, hanya standard library.
+
+## A. Setup project
+
+Pastikan Go sudah terinstall.
+
+```bash
+go version
+```
+
+Buat folder project lalu init module.
+
+```bash
+mkdir hello-go && cd hello-go
+go mod init hello-go
+```
+
+## B. Hello World
+
+Buat file `main.go`.
+
+```go title="main.go"
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Hello, Go!")
+}
+```
+
+Jalankan:
+
+```bash
+go run .
+```
+
+## C. HTTP server
+
+Ganti isi `main.go` dengan server yang punya satu endpoint `/health`.
+
+```go title="main.go"
+package main
+
+import (
+	"encoding/json"
+	"log"
+	"net/http"
+)
+
+type Response struct {
+	Status string `json:"status"`
+}
+
+func health(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(Response{Status: "ok"})
+}
+
+func main() {
+	http.HandleFunc("/health", health)
+
+	log.Println("listening on :8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+```
+
+Coba dari terminal lain:
+
+```bash
+curl localhost:8080/health
+# {"status":"ok"}
+```
+
+## Catatan
+
+- Tag `json:"status"` menentukan nama field di JSON. Tanpa itu, namanya jadi `Status`.
+- `log.Fatal` menghentikan program kalau server gagal start, misalnya port sudah dipakai.

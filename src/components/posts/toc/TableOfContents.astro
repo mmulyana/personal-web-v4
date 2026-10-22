@@ -17,12 +17,11 @@ const filteredHeadings = headings.reduce(
       acc.push({
         ...heading,
         text: heading.text.replace(/\s*[Hh][1-6]$/g, ''),
-        order: acc.length + 1,
       })
     }
     return acc
   },
-  [] as (MarkdownHeading & { order: number })[]
+  [] as MarkdownHeading[]
 )
 
 // Calculate relative indentation - based on the minimum depth actually present
@@ -42,7 +41,7 @@ const getRelativeIndentClass = (depth: number) => {
     </h3>
     <div class="relative h-[calc(100vh-24rem)] overflow-hidden">
       <ul
-        class="space-y-2 absolute w-full transition-transform duration-300 will-change-transform"
+        class="absolute w-full border-l border-border transition-transform duration-300 will-change-transform"
         data-desktop-toc-list
         style="content-visibility: auto;"
       >
@@ -56,16 +55,14 @@ const getRelativeIndentClass = (depth: number) => {
                   href={`#${heading.slug}`}
                   data-desktop-heading-link
                   class={cn(
-                    'group flex items-center text-sm min-h-[1.75rem] w-full overflow-hidden relative',
-                    'hover:bg-gradient-to-r hover:from-primary/10 dark:hover:from-primary/25 hover:to-transparent',
-                    'data-[active]:bg-gradient-to-r data-[active]:from-primary/10 dark:data-[active]:from-primary/25 data-[active]:to-transparent '
+                    'group flex items-center text-sm min-h-[1.75rem] w-full overflow-hidden relative -ml-px py-0.5 pl-3',
+                    'border-l-2 border-transparent transition-colors',
+                    'hover:border-foreground/30',
+                    'data-[active]:border-primary'
                   )}
                 >
-                  <span class="font-mono flex items-center px-2 text-xs text-primary/50 group-hover:text-primary group-data-[active]:text-primary min-w-[2rem]">
-                    {heading.order.toString().padStart(2, '0')}
-                  </span>
                   <span
-                    class="leading-[1.75rem] truncate pr-2 group-hover:text-primary group-data-[active]:text-primary"
+                    class="leading-[1.75rem] truncate pr-2 group-hover:text-foreground group-data-[active]:text-foreground group-data-[active]:font-medium"
                     title={heading.text}
                   >
                     {heading.text}

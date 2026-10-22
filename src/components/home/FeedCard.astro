@@ -15,7 +15,9 @@ const { id, type, url, website, featured, order, githubUrls } = item
 
 // Matches the client-side filter in FeedTabs.astro — pre-hides non-matching cards so
 // there's no flash of the unfiltered list before the tab script runs on hydration.
-const matchesActiveTab = activeTab === 'featured' ? !!featured : type === activeTab
+// note: tutorial and blog share one "writing" tab
+const tabKey = type === 'tutorial' || type === 'blog' ? 'writing' : type
+const matchesActiveTab = activeTab === 'featured' ? !!featured : tabKey === activeTab
 
 // Project cards carry their own Details/Website/GitHub buttons, so the whole card
 // can't also be one big <a> — that would nest anchors. Every other type still is.
@@ -30,7 +32,7 @@ const hasHoverAffordance = isCardLink || (type === 'project' && (!!url || !!webs
   {...linkProps}
   data-feed-item
   data-feed-id={id}
-  data-feed-type={type}
+  data-feed-type={tabKey}
   data-feed-featured={featured ? '' : undefined}
   style={order === undefined ? undefined : `--feed-order:${order}`}
   class={cn(

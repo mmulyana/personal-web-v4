@@ -96,8 +96,7 @@ export const FEED_CONFIG: FeedConfig = {
   TABS: [
     { key: 'featured', label: 'Featured', icon: 'icon-[ph--star-bold]' },
     { key: 'project', label: 'Projects', icon: 'icon-[ph--cube-bold]' },
-    { key: 'tutorial', label: 'Tutorial', icon: 'icon-[ph--graduation-cap-bold]' },
-    { key: 'blog', label: 'Post', icon: 'icon-[ph--article-bold]' },
+    { key: 'writing', label: 'Writing', icon: 'icon-[ph--article-bold]' },
     { key: 'experience', label: 'Experience', icon: 'icon-[ph--briefcase-bold]' },
   ],
 }

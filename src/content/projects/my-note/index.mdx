@@ -2,23 +2,52 @@
 name: 'My Note'
 description: "Personal notes for everyday thinking"
 website: 'https://mynote.mmulyana.com/'
-githubUrls: ['https://github.com/mmulyana/my-note-fe', 'https://github.com/mmulyana/my-note-be'] # TODO: add the backend repo too, e.g. my-note-be
+githubUrls: ['https://github.com/mmulyana/my-note-fe', 'https://github.com/mmulyana/my-note-be']
 stack: ['react.js', 'typescript', 'go', 'postgres']
 thumbnail: './assets/thumbnail2.png'
 type: 'none'
 star: 0
 fork: 0
-hasDetail: false
+hasDetail: true
 ---
 
-## Background
+## Overview
 
-TODO: why did you build this? What problem was it solving, what sparked it.
+My Note is a personal notes app for writing and organizing everyday thoughts. Notes are written in a rich text editor, grouped with folders and labels, and can be nested as sub-notes. AI help is available right inside the editor.
+
+## Features
+
+- **Rich text editor** built on Tiptap, with slash commands, a drag handle to move blocks, tables, images, and code blocks with their own toolbar.
+- **Sub-notes** let any note have child notes, nested as deep as needed. A note shows how many children it has, a breadcrumb jumps back to the parent, and a note can be moved under another one at any time. Children follow the folder, archive, and secret state of their parent, and moves that would create a cycle are rejected.
+- **Task lists** inside notes, so to-dos live next to regular text.
+- **Link cards** that turn a URL into a preview card.
+- **Folders and labels** to group notes, with search and filters on the home screen.
+- **AI bubble menu** to ask AI about the selected text, with a per-user usage limit.
+- **Guest mode** to try the app without signing up, and upgrade the account anytime.
+- **Feedback** sent straight from the app.
 
 ## Tech stack
 
-TODO: languages, frameworks, and any notable libraries or infra choices, and why you picked them.
+**Frontend**
 
-## Highlights
+- React 19 and TypeScript, built with Vite.
+- Tiptap for the editor, dnd-kit for drag and drop.
+- TanStack Query for data fetching and Jotai for light state.
+- Tailwind CSS 4 and shadcn/ui for the UI.
 
-TODO: anything you're proud of — a tricky feature, a performance win, a design decision.
+**Backend**
+
+- Go with Gin as the HTTP framework.
+- PostgreSQL through GORM, with migrations by golang-migrate.
+- JWT for authentication.
+- Image uploads handled by the backend itself and served from its `/uploads` folder.
+- OpenRouter as the model provider for AI features.
+
+**Infra**
+
+- Frontend and backend are both packed with Docker, and the frontend is served by Nginx.
+- Automatic deploys through GitHub Actions in each repo.
+
+## Backend structure
+
+The backend is split by module in `internal/modules` (`ai`, `folders`, `labels`, `feedback`, and so on). Each module has its own `handler`, `service`, `dto`, and `routes` files, so adding a feature means adding one folder without touching other modules.

@@ -631,6 +631,44 @@ image-figure-polaroid {
   & .gutter .ln {
     padding-inline: 1ch !important;
   }
+
+  /* note: undo .markdown pre padding/margin, it leaves side strips inside the frame */
+  & pre {
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  /* note: terminal style, always dark (single theme in ec.config.mjs) */
+  & .frame {
+    overflow: hidden;
+    border: 0;
+    border-radius: 0.5rem;
+    box-shadow: none;
+  }
+
+  & .frame.has-title:not(.is-terminal) .header {
+    background: #0d1117;
+    border: 0;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
+    & .title {
+      border: 0;
+      background: none;
+      color: #8b949e;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+
+      &::after {
+        display: none;
+      }
+    }
+  }
 }
 
 @media (width <= 768px) {

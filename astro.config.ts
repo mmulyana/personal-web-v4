@@ -26,7 +26,7 @@ export default defineConfig({
   integrations: [
     expressiveCode({
       defaultProps: {
-        frame: 'none',
+        frame: 'code',
       },
     }),
     mdx(),

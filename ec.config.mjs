@@ -16,12 +16,12 @@ export default defineEcConfig({
     uiFontFamily: 'var(--font-sans)',
     uiFontSize: '1em',
     codeFontFamily: 'var(--font-mono)',
-    codeFontSize: '0.875rem',
+    codeFontSize: '0.9375rem',
     codeLineHeight: '1.4',
     borderRadius: '0',
     codePaddingBlock: '0.8571429em',
     codePaddingInline: '1.1428571em',
-    borderColor: ({ theme }) => (theme.type === 'dark' ? '#24273a' : '#e6e9ef'),
+    borderWidth: '0px',
 
     frames: {
       frameBoxShadowCssValue: false,
@@ -41,8 +41,7 @@ export default defineEcConfig({
     pluginLineNumbers(),
   ],
 
-  themes: ['catppuccin-macchiato', 'catppuccin-latte'],
-  themeCssSelector: (theme) => (theme.name === 'catppuccin-macchiato' ? '.dark' : ':root:not(.dark)'),
+  themes: ['github-dark'],
   useDarkModeMediaQuery: false,
   useStyleReset: false,
 })
