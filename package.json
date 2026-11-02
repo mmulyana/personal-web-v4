@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.2.1",
+    "@astrojs/vercel": "^11.0.17",
     "@floating-ui/react": "^0.27.12",
     "@nanostores/react": "^0.8.4",
     "@react-pdf/renderer": "^4.9.0",

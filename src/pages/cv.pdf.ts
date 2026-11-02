@@ -4,6 +4,8 @@ import { renderToBuffer } from '@react-pdf/renderer'
 import CvDocument from '~/components/cv/CvDocument'
 import { getCvData } from '~/lib/cv'
 
+export const prerender = false
+
 export const GET: APIRoute = async () => {
   const data = await getCvData()
   // note: CvDocument renders a <Document>, so this cast is safe

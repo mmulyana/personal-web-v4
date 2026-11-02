@@ -6,9 +6,11 @@ import sitemap from '@astrojs/sitemap'
 import robotsTxt from 'astro-robots-txt'
 import expressiveCode from 'astro-expressive-code'
 import { remarkPlugins, rehypePlugins } from './plugins'
+import vercel from '@astrojs/vercel'
 import { SITE } from './src/config'
 
 export default defineConfig({
+  adapter: vercel(),
   site: SITE.website,
   base: SITE.base,
   prefetch: {
