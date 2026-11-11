@@ -1,0 +1,31 @@
+---
+import { codeToTokens } from 'shiki'
+import Head from '~/components/base/Head.astro'
+import '~/styles/global.css'
+import CodeTyping from '~/components/typing/CodeTyping'
+import { snippets } from '~/components/typing/snippets'
+
+// Warna per karakter, termasuk '\n' antar baris, supaya urutannya sama dengan string kode.
+const colors = await Promise.all(
+  snippets.map(async ({ code, lang }) => {
+    const { tokens } = await codeToTokens(code, {
+      lang,
+      theme: 'github-dark',
+    })
+    return tokens.flatMap((line, i) => {
+      const lineColors = line.flatMap((t) => Array.from(t.content, () => t.color ?? '#e1e4e8'))
+      return i < tokens.length - 1 ? [...lineColors, '#e1e4e8'] : lineColors
+    })
+  })
+)
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head title="Code Typing" description="Practice typing code snippets for muscle memory." />
+  </head>
+  <body class="m-0 bg-neutral-950">
+    <CodeTyping client:load {colors} />
+  </body>
+</html>
