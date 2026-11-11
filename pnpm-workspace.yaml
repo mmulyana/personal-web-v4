@@ -1,3 +1,14 @@
 allowBuilds:
-  esbuild: set this to true or false
-  sharp: set this to true or false
+  esbuild: true
+  sharp: true
+minimumReleaseAgeExclude:
+  - '@astrojs/internal-helpers@0.13.2'
+  - '@astrojs/markdown-satteri@0.4.8'
+  - '@astrojs/react-renderer@0.1.1'
+  - '@astrojs/react@7.1.7'
+  - '@astrojs/runtime@0.1.0'
+  - '@astrojs/vercel@11.0.21'
+  - '@astrojs/vite-plugin-astro@0.1.1'
+  - astro@7.4.10
+  - '@astrojs/markdown-remark@7.3.7'
+  - '@astrojs/mdx@8.1.4'
